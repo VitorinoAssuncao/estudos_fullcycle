@@ -1,0 +1,7 @@
+FROM golang:alpine AS builder
+
+WORKDIR /src
+
+COPY ./Go .
+
+RUN go build -ldflags '-s -w' main.go
