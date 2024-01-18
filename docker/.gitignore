@@ -1,3 +1,5 @@
 laravel/*
 node/*
 nginx/*
+mysql/*
+docker-compose.yml
