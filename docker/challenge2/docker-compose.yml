@@ -2,21 +2,6 @@ version: '3'
 
 services:
 
-  app:
-    build: 
-      context: node
-    container_name: app
-    networks:
-      - challenge2
-    volumes:
-      - ./node:/usr/src/app
-    tty: true
-    ports:
-      - "3000:3000"
-    depends_on:
-      db:
-        condition: service_healthy
-
   db:
     image: mysql:5.7
     command:  --innodb-use-native-aio=0
@@ -35,6 +20,37 @@ services:
       retries: 3
     networks:
       - challenge2
+
+  app:
+    build: 
+      context: node
+      dockerfile: Dockerfile
+    container_name: app
+    networks:
+      - challenge2
+    volumes:
+      - ./node:/usr/src/app
+    tty: true
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    build: 
+      context: nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    tty: true
+    ports:
+      - "8080:80"
+    networks:
+      - challenge2
+    links:
+      - app
+    depends_on:
+      - app
 
 networks:
   challenge2:
