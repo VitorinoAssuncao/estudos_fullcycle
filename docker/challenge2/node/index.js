@@ -13,7 +13,7 @@ const config = {
 
 const connection = mysql.createConnection(config)
 
-connection.query(`INSERT INTO people(name) values ('Vitorino');`)
+connection.query(`INSERT INTO people(name) values ('Picolino');`)
 
 
 app.set('view engine', 'ejs')

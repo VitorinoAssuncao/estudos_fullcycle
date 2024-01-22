@@ -9,8 +9,8 @@ services:
     restart: always
     tty: true
     volumes:
-      - ./init-scripts:/docker-entrypoint-initdb.d
-      - ./mysql:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/data:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
