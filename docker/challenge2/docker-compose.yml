@@ -27,6 +27,7 @@ services:
       context: node
       dockerfile: Dockerfile
     container_name: app
+    command: bash -c "npm install && npm start"
     networks:
       - challenge2
     volumes:
