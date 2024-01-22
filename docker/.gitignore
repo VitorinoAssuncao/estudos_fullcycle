@@ -4,4 +4,5 @@ nginx/*
 mysql/*
 docker-compose.yml
 challenge2/mysql/*
+!challenge2/mysql/init
 challenge2/node/node_modules/*
