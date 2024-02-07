@@ -11,6 +11,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 const defaultPort = "8080"
