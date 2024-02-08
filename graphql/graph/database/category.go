@@ -61,3 +61,19 @@ func (c *CategoryDB) List() ([]Category, error) {
 
 	return categories, nil
 }
+
+func (c *CategoryDB) GetByCourseID(courseID string) (Category, error) {
+	query := `select 
+					c.id, c.name, c.description 
+					from categories c
+					inner join courses co on (co.category_id = c.id) 
+					where co.id = $1`
+
+	var category Category
+	err := c.db.QueryRow(query, courseID).Scan(&category.ID, &category.Name, &category.Description)
+	if err != nil {
+		return Category{}, err
+	}
+
+	return category, nil
+}

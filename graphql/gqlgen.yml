@@ -76,10 +76,10 @@ autobind:
 models:
   Category:
     model:
-      - graphql_estudos/graph/models.Category
+      - graphql_estudos/graph/model.Category
   Course:
     model:
-      - graphql_estudos/graph/models.Course
+      - graphql_estudos/graph/model.Course
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID

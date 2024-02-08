@@ -63,3 +63,25 @@ func (c *CourseDB) List() ([]Course, error) {
 
 	return courses, nil
 }
+
+func (c *CourseDB) GetByCategoryID(categoryID string) ([]Course, error) {
+	query := `select id, name, description from courses where category_id = $1 `
+	rows, err := c.db.Query(query, categoryID)
+	if err != nil {
+		return nil, nil
+	}
+	defer rows.Close()
+
+	courses := make([]Course, 0)
+
+	for rows.Next() {
+		var course Course
+		if err := rows.Scan(&course.ID, &course.Name, &course.Description); err != nil {
+			return nil, err
+		}
+
+		courses = append(courses, course)
+	}
+
+	return courses, nil
+}
