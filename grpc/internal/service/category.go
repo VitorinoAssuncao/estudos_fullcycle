@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/VitorinoAssuncao/estudos_fullcycle/grpc/internal/database"
 	"github.com/VitorinoAssuncao/estudos_fullcycle/grpc/internal/pb"
@@ -31,6 +32,25 @@ func (c *CategoryService) CreateCategory(ctx context.Context, input *pb.CreateCa
 			Description: category.Description,
 		},
 	}, nil
+}
+
+func (c *CategoryService) GetCategory(ctx context.Context, input *pb.GetCategoryRequest) (*pb.Category, error) {
+	categories, err := c.CategoryDB.List()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, c := range categories {
+		if c.ID == input.CategoryId {
+			return &pb.Category{
+				Id:          c.ID,
+				Name:        c.Name,
+				Description: c.Description,
+			}, nil
+		}
+	}
+
+	return nil, fmt.Errorf("category not found")
 }
 
 func (c *CategoryService) ListCategories(ctx context.Context, _ *pb.Blank) (*pb.CategoryList, error) {
