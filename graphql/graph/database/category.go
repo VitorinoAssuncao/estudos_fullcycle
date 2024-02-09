@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -68,6 +69,8 @@ func (c *CategoryDB) GetByCourseID(courseID string) (Category, error) {
 					from categories c
 					inner join courses co on (co.category_id = c.id) 
 					where co.id = $1`
+
+	fmt.Printf("a")
 
 	var category Category
 	err := c.db.QueryRow(query, courseID).Scan(&category.ID, &category.Name, &category.Description)
