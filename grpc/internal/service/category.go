@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 
 	"github.com/VitorinoAssuncao/estudos_fullcycle/grpc/internal/database"
 	"github.com/VitorinoAssuncao/estudos_fullcycle/grpc/internal/pb"
@@ -32,6 +34,36 @@ func (c *CategoryService) CreateCategory(ctx context.Context, input *pb.CreateCa
 			Description: category.Description,
 		},
 	}, nil
+}
+
+func (c *CategoryService) CreateCategoryStream(stream pb.CategoryService_CreateCategoryStreamServer) error {
+	categories := make([]*pb.Category, 0)
+
+	for {
+		input, err := stream.Recv()
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				break
+			}
+
+			return err
+		}
+
+		newCategory, err := c.CategoryDB.Create(input.Name, input.Description)
+		if err != nil {
+			return err
+		}
+
+		categories = append(categories, &pb.Category{
+			Id:          newCategory.ID,
+			Name:        newCategory.Name,
+			Description: newCategory.Description,
+		})
+	}
+
+	return stream.SendAndClose(&pb.CategoryList{
+		Categories: categories,
+	})
 }
 
 func (c *CategoryService) GetCategory(ctx context.Context, input *pb.GetCategoryRequest) (*pb.Category, error) {
