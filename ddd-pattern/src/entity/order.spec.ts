@@ -21,10 +21,10 @@ describe("Order unit tests", () =>{
       });
 
       it("should calculate total",() =>{
-        const item = new OrderItem("1","item1",1)
+        const item = new OrderItem("1",1,"productID",2)
 
         const order = new Order("abc","customerID",[item, item])
-        expect(order.total()).toBe(2)
+        expect(order.total()).toBe(4)
       });
 
 })
