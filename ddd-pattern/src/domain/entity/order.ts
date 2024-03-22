@@ -42,4 +42,8 @@ export default class Order{
         return this._items.reduce((acc, item) => acc + (item.price*item.quantity), 0)
     }
 
+    updateOrderItems(items:OrderItem[]){
+      this._items = items
+    }
+
 }
