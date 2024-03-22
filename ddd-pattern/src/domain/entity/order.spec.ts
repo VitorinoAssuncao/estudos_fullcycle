@@ -21,7 +21,7 @@ describe("Order unit tests", () =>{
       });
 
       it("should calculate total",() =>{
-        const item = new OrderItem("1",1,"productID",2)
+        const item = new OrderItem("1",1,"productID","Product 1",2)
 
         const order = new Order("abc","customerID",[item, item])
         expect(order.total()).toBe(4)
