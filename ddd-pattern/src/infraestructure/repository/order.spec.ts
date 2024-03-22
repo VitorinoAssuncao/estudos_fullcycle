@@ -57,7 +57,7 @@ describe("Order Repository test", () => {
 
       const orderModel = await OrderModel.findOne(
         { 
-            where: { id: "1" },
+            where: { id: order.id },
             include: ["items"] 
         }
         );

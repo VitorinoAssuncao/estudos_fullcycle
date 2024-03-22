@@ -4,7 +4,7 @@ import OrderItem from "./order_item";
 export default class Order{
     private _id:string;
     private _customerID:string;
-    private _items: OrderItem[] = [];
+    private _items: OrderItem[];
 
     constructor(id:string, customerID:string, items:OrderItem[]){
         this._id = id;
@@ -23,7 +23,7 @@ export default class Order{
       }
 
       get items(): OrderItem[] {
-        return this.items;
+        return this._items;
       }
 
       validate() {
