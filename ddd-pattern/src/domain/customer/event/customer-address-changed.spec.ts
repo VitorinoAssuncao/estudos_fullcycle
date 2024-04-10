@@ -1,5 +1,5 @@
-import Address from "../../entity/address";
-import EventDispatcher from "../@shared/event-dispatcher";
+import EventDispatcher from "../../@shared/event/event-dispatcher";
+import Address from "../../customer/entity/address";
 import CustomerAddressChangedEvent from "./customer-address-changed.event";
 import CustomerAddressChangedHandler from "./handler/customer-address-changed.handler";
 
