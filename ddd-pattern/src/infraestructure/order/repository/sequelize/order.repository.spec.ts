@@ -3,8 +3,8 @@ import ProductModel from "../../../db/sequelize/model/product";
 import Product from "../../../../domain/product/entity/product";
 import ProductRepository from "../../../repository/product";
 import Customer from "../../../../domain/customer/entity/customers"
-import CustomerModel from "../../../db/sequelize/model/customer";
-import CustomerRepository from "../../../repository/customer";
+import CustomerModel from "../../../customer/repository/sequelize/customer.model";
+import CustomerRepository from "../../../customer/repository/sequelize/customer.repository";
 import Address from "../../../../domain/customer/entity/address";
 import OrderItemModel from "./order-item.model";
 import OrderModel from "./order.model";
