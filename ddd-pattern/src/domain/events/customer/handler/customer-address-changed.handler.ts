@@ -1,8 +1,8 @@
 import EventHandlerInterface from "../../@shared/event-handler.interface";
-import EventInterface from "../../@shared/event.interface";
+import CustomerAddressChangedEvent from "../customer-address-changed.event";
 
-export default class CustomerAddressChangedHandler implements EventHandlerInterface{
-    handle(event: EventInterface): void {
+export default class CustomerAddressChangedHandler implements EventHandlerInterface<CustomerAddressChangedEvent>{
+    handle(event: CustomerAddressChangedEvent): void {
         const id = event.eventData.id;
         const name = event.eventData.name;
         const address = event.eventData.address.toString();
