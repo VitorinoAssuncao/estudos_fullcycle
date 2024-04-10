@@ -1,6 +1,6 @@
 import { Table, Model, PrimaryKey, Column, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
-import CustomerModel from "./customer";
-import OrderItemModel from "./order-item";
+import CustomerModel from "../../../db/sequelize/model/customer";
+import OrderItemModel from "./order-item.model";
 
 @Table({
   tableName: "order",
