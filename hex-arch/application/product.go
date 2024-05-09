@@ -17,7 +17,7 @@ type ProductInterface interface {
 	GetPrice() uint
 }
 
-type ProductService interface {
+type ProductServiceInterface interface {
 	Get(id string) (ProductInterface, error)
 	Create(name string, price uint) (ProductInterface, error)
 	Enable(product ProductInterface) error
