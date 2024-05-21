@@ -1,6 +1,5 @@
 import { Sequelize } from "sequelize-typescript"
 import CustomerModel from "../../../infraestructure/customer/repository/sequelize/customer.model"
-import CustomerRepository from "../../../infraestructure/customer/repository/sequelize/customer.repository";
 import Customer from "../../../domain/customer/entity/customers";
 import Address from "../../../domain/customer/entity/address";
 import FindCustomerUsecase from "./find.customer";
@@ -55,5 +54,22 @@ describe('Find Customer', () => {
 
       expect(want).toEqual(got);
     })
+
+    it('should not found a customer', async () => {
+      const customerRepository = MockRepository();
+
+      customerRepository.find.mockImplementation(() => {
+        throw new Error("Customer not found");
+      })
+
+      const usecase = new FindCustomerUsecase(customerRepository);
+       
+      const input = {id: "1"};
+
+
+      expect( () => {
+        return  usecase.execute(input)
+      }).rejects.toThrow("Customer not found");
+    }) 
 
 });
