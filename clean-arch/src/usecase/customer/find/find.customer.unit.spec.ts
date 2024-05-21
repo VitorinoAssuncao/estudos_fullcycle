@@ -5,6 +5,19 @@ import Customer from "../../../domain/customer/entity/customers";
 import Address from "../../../domain/customer/entity/address";
 import FindCustomerUsecase from "./find.customer";
 
+const customer = new Customer("1","Joao");
+const address = new Address("Rua 1",1,"8900000","Sao Paulo")
+customer.changeAddress(address);
+
+const MockRepository =  () => {
+  return {
+    create: jest.fn(),
+    update: jest.fn(),
+    find: jest.fn().mockReturnValue(Promise.resolve(customer)),
+    findAll: jest.fn()
+  }
+}
+
 describe('Find Customer', () => {
     let sequelize: Sequelize;
 
@@ -21,18 +34,10 @@ describe('Find Customer', () => {
   
    
     it('should find a customer', async () => {
-      const customerRepository = new CustomerRepository();
+      const customerRepository = MockRepository();
 
       const usecase = new FindCustomerUsecase(customerRepository);
-
-      const customer = new Customer("1","Joao");
-      const address = new Address("Rua 1",1,"8900000","Sao Paulo")
-
-      customer.changeAddress(address);
-
-
-      await customerRepository.create(customer);
-      
+       
       const input = {id: "1"};
 
       const want = {
@@ -46,7 +51,7 @@ describe('Find Customer', () => {
         }
       }
 
-      const got = usecase.execute(input);
+      const got = await usecase.execute(input);
 
       expect(want).toEqual(got);
     })
