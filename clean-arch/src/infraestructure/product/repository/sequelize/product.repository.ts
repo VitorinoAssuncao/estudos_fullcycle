@@ -4,7 +4,7 @@ import ProductRepositoryInterface from "../../../../domain/product/repository/pr
 import ProductInterface from "../../../../domain/product/entity/product.interface";
 
 export default class ProductRepository implements ProductRepositoryInterface{
-  async create(product: Product): Promise<void>{
+  async create(product: ProductInterface): Promise<void>{
         await ProductModel.create({
             id: product.id,
             name: product.name,
