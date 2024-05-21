@@ -1,7 +1,7 @@
 import Address from "../../../domain/customer/entity/address";
 import CustomerFactory from "../../../domain/customer/factory/customer.factory";
 import CustomerRepositoryInterface from "../../../domain/customer/repository/customer-interface";
-import { InputCreateCustomer, OutputCreateCustomer } from "./create.customer.dto";
+import { CreateCostumerInput, CreateCostumerOutput } from "./create.customer.dto";
 
 export default class CreateCustomerUsecase{
     private customerRepository: CustomerRepositoryInterface
@@ -10,7 +10,7 @@ export default class CreateCustomerUsecase{
         this.customerRepository = customerRepository;
     }
 
-    async execute(input: InputCreateCustomer): Promise<OutputCreateCustomer>{        
+    async execute(input: CreateCostumerInput): Promise<CreateCostumerOutput>{        
         const customer =  CustomerFactory.createWithAddress(input.name, new Address(input.address.street, input.address.number, input.address.zipCode, input.address.city));
 
         await this.customerRepository.create(customer);

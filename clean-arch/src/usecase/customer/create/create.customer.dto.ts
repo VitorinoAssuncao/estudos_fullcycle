@@ -1,4 +1,4 @@
-export interface InputCreateCustomer{
+export interface CreateCostumerInput{
     name: string;
     address:{
         street: string;
@@ -8,6 +8,6 @@ export interface InputCreateCustomer{
     }
 }
 
-export interface OutputCreateCustomer{
+export interface CreateCostumerOutput{
     id: string;
 }
