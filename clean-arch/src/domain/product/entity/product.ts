@@ -2,6 +2,7 @@ import { error } from "console";
 import ProductInterface from "./product.interface";
 import Entity from "../../@shared/entity/entity.abstract";
 import NotificationError from "../../@shared/notification/notification.error";
+import ProductValidatorFactory from "../factory/product.factory.validator";
 
 export default class Product extends Entity{
     protected _id:string;
@@ -32,26 +33,7 @@ export default class Product extends Entity{
     }
 
       validate() {
-        if (this._id.length === 0) {
-          this.notification.addError({
-            message: "Id is required",
-            context: "product",
-          });
-        }
-        
-        if (this._name.length === 0) {
-          this.notification.addError({
-            message: "Name is required",
-            context: "product",
-          });
-        }
-
-        if (this._price <= 0){
-          this.notification.addError({
-            message: "Price need to be greater than zero",
-            context: "product",
-          });
-        } 
+        ProductValidatorFactory.create().validate(this);
 
         if (this.notification.hasErrors()) {
           throw new NotificationError(this.notification.errors);
