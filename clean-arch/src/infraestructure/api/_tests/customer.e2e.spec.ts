@@ -79,5 +79,9 @@ describe("Customer API", () => {
     expect(response.body.customers[0].id).toBeDefined();
     expect(response.body.customers[1].id).toBeDefined();
 
+    const responseXML = await (await request(app).get("/customer").set("Accept","application/xml").send());
+
+    expect(responseXML.status).toBe(200);
+    expect(responseXML.text).toContain(`<?xml version="1.0" encoding="UTF-8"?>`)
   });
 });
