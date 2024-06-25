@@ -9,7 +9,7 @@ export default class ID implements VO{
         this._id = id || uuidv4();
     }
 
-    get id(){
+    get value(){
         return this._id;
     }
 }
