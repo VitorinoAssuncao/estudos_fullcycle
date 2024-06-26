@@ -28,7 +28,7 @@ describe('CheckStockUsecase unit test', () => {
         const result = await usecase.execute(input);
 
         expect(repository.findByID).toHaveBeenCalled();
-        expect(result.id.value).toEqual(newProduct.id.value);
+        expect(result.id).toEqual(newProduct.id.value);
         expect(result.stock).toEqual(newProduct.stock);
     });
 });

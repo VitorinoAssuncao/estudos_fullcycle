@@ -12,7 +12,7 @@ export default class CheckStock {
     async execute(input:CheckStockInputDTO) {
         const product = await this._productRepository.findByID(input.id);
         return {
-            id: product.id,
+            id: product.id.value,
             stock: product.stock
         };
     }
