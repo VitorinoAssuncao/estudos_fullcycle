@@ -1,8 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import ProductModel from "../repository/product.model";
-import ProductRepository from "../repository/product.repository";
-import AddProductUsecase from "../usecase/add-product/add-product.usecase";
-import ProductADMFacade from "./product-adm.facade";
+import ProductAdmFacadeFactory from "../factory/facade.factory";
 
 describe('ProductAdmFacade unit test', () => {
     let sequelize: Sequelize;
@@ -25,13 +23,8 @@ describe('ProductAdmFacade unit test', () => {
     })
 
     it('should add a product', async () => {
-        const productRepository = new ProductRepository();
-        const addProductUsecase = new AddProductUsecase(productRepository);
 
-        const facade = new ProductADMFacade({
-            addUseCase: addProductUsecase,
-            checkStockUseCase: undefined
-        })
+        const facade = ProductAdmFacadeFactory.create();
 
         await facade.addProduct({
             id: '1',
@@ -41,7 +34,7 @@ describe('ProductAdmFacade unit test', () => {
             stock: 10,
         });
 
-        const result = await productRepository.findByID('1');
+        const result = await ProductModel.findByPk('1');
 
         expect(result.name).toEqual('Product 1');
         expect(result.description).toEqual('Description of product 1');
