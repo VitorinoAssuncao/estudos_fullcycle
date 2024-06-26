@@ -7,7 +7,7 @@ export default class FindAllUsecase{
         this._storeCatalogRepository = repository;
     }
 
-    async execute() {
+    async execute():Promise<any> {
         const storeCatalogs = await this._storeCatalogRepository.findAll();
         return storeCatalogs.map(storeCatalog => ({
             id: storeCatalog.id.value,

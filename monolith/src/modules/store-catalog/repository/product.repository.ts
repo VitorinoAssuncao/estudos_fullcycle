@@ -1,6 +1,7 @@
 import ID from "../../@shared/domain/vo/id.vo";
 import Product from "../domain/product.entity";
 import StoreCatalogGateway from "../gateway/store-catalog.gateway";
+import { FindByIDDTO } from "../usecase/find-by-id/find-by-id.dto";
 import ProductModel from "./product.model";
 
  export default class ProductRepository implements StoreCatalogGateway{
@@ -15,8 +16,8 @@ import ProductModel from "./product.model";
         }));
     }
 
-    async findByID(id:string):Promise<Product> {
-        const product = await ProductModel.findByPk(id);
+    async findByID(input: FindByIDDTO): Promise<Product> {
+        const product = await ProductModel.findByPk(input.id);
         if(!product){
             throw new Error("Product not found");
         }
@@ -27,6 +28,6 @@ import ProductModel from "./product.model";
             description: product.description,
             salesPrice: product.salesPrice,
         });
-    };
+    }
 
 }

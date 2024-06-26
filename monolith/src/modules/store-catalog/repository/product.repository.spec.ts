@@ -59,7 +59,7 @@ describe('ProductRepository', () => {
 
         const productRepository = new ProductRepository();
 
-        const result = await productRepository.findByID('1');
+        const result = await productRepository.findByID({ id: '1' });
 
         expect(result.name).toEqual('Product 1');
         expect(result.description).toEqual('Description of product 1');
