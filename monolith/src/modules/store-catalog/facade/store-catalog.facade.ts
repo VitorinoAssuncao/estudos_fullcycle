@@ -18,15 +18,14 @@ export default class StoreCatalogFacade implements StoreCatalogFacadeInterface{
     async findAll(): Promise<FindAllOutputDTO> {
         const products = await this._findAllUseCase.execute();
     
-        const resultValues =  products.map((product: any) => ({
-            id: product.id.value,
-            name: product.name,
-            description: product.description,
-            salesPrice: product.salesPrice,
-        }));
 
         return {
-            products: resultValues
+            products: products.map((product: any) => ({
+                id: product.id.value,
+                name: product.name,
+                description: product.description,
+                salesPrice: product.salesPrice,
+            }))
         }
     }
 
