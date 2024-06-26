@@ -40,4 +40,23 @@ describe('StoreCatalogFacade', () => {
         expect(result.products[0].description).toBe(product.description);
         expect(result.products[0].salesPrice).toBe(product.salesPrice);
     });
+
+    it('should find product by id', async () => {
+        const facade = StoreCatalogFacadeFactory.create();
+
+        const product = await ProductModel.create({
+            id: "1",
+            name: 'Product 1',
+            description: 'Description of product 1',
+            salesPrice: 100,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        });
+
+        const result = await facade.findByID({ id: product.id });
+
+        expect(result.name).toBe(product.name);
+        expect(result.description).toBe(product.description);
+        expect(result.salesPrice).toBe(product.salesPrice);
+    });
 });

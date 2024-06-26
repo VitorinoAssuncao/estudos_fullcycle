@@ -31,6 +31,6 @@ export default class StoreCatalogFacade implements StoreCatalogFacadeInterface{
     }
 
     async findByID(input: FindByIDInputDTO): Promise<FindByIDOutputDTO> {
-        return await this._findByIDUseCase.execute({id: new ID(input.id)});
+        return await this._findByIDUseCase.execute(input);
     }
 }
