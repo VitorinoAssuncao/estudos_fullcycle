@@ -1,4 +1,5 @@
 import ClientGateway from "../../gateway/client.gateway";
+import { FindClientInputDTO } from "./find-client.dto";
 
 export default class FindClientUsecase {
      private _repository:ClientGateway;
@@ -7,8 +8,8 @@ export default class FindClientUsecase {
             this._repository = repository;
         }
 
-        async execute(id: string) {
-            const client = await this._repository.findByID(id)
+        async execute(input: FindClientInputDTO) {
+            const client = await this._repository.findByID(input.id);
         
             return {
                 id: client.id.value,

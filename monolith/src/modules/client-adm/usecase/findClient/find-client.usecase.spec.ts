@@ -28,7 +28,7 @@ describe('FindClientUsecase', () => {
             id: '1'
         };
 
-        const result = await usecase.execute(input.id);
+        const result = await usecase.execute(input);
 
         expect(repository.findByID).toHaveBeenCalled();
         expect(result.id).toEqual(client.id.value);

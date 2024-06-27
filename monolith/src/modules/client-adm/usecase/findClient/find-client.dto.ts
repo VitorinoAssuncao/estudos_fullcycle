@@ -1,7 +1,5 @@
-import ID from "../../../@shared/domain/vo/id.vo";
-
 export interface FindClientInputDTO {
-    id: ID;
+    id: string;
 }
 
 export interface FindClientOutputDTO {
