@@ -25,7 +25,7 @@ export default class GenerateInvoiceUseCase {
             items: input.items
         });
 
-        this._repository.add(invoice);
+        await this._repository.add(invoice);
 
         return {
             id: invoice.id.value,

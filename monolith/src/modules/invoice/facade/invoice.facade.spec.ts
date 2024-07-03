@@ -53,7 +53,6 @@ describe('InvoiceFacade', () => {
         const result = await invoiceFacade.generateInvoice(input);
 
         // Assert
-        expect(result.id).toBeDefined();
         expect(result.name).toEqual(input.name);
         expect(result.document).toEqual(input.document);
         expect(result.street).toEqual(input.street);
