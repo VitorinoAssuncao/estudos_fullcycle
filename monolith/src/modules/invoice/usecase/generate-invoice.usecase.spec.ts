@@ -10,7 +10,7 @@ describe('GenerateInvoiceUsecase', () => {
 
     it('should generate an invoice', async () => {
         const repository = MockRepository();
-        const usecase = new GenerateInvoiceUseCase(repository);
+        const useCase = new GenerateInvoiceUseCase(repository);
 
         const input = {
             name: 'Customer 1',
@@ -37,7 +37,7 @@ describe('GenerateInvoiceUsecase', () => {
             ]
         }
         
-        const result = await usecase.execute(input);
+        const result = await useCase.execute(input);
 
         expect(repository.add).toHaveBeenCalled();
         expect(result.name).toEqual(input.name);
