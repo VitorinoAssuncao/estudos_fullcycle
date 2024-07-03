@@ -102,7 +102,30 @@ describe('InvoiceRepository unit test', () => {
     
             const invoiceRepository = new InvoiceRepository();
     
-            await invoiceRepository.add(invoice);
+            await InvoiceModel.create({
+                id: invoice.id.value,
+                name: invoice.name,
+                document: invoice.document,
+                street: invoice.address.street,
+                number: invoice.address.number,
+                complement: invoice.address.complement,
+                city: invoice.address.city,
+                state: invoice.address.state,
+                zipCode: invoice.address.zipCode,
+                items: invoice.items.map(item => (
+                    {
+                    id: item.id.value,
+                    invoice_id: invoice.id.value,
+                    name: item.name,
+                    price: item.price,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt 
+                })),
+                createdAt: invoice.createdAt,
+                updatedAt: invoice.updatedAt
+            },{
+                include: [{model: InvoiceItemModel}]
+            });
     
             const result = await invoiceRepository.findByID(invoice.id.value)
     
