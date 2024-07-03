@@ -20,6 +20,6 @@ export default class InvoiceFacade implements InvoiceFacadeInterface{
     }
 
     async findInvoice(input: FindInvoiceFacadeInputDTO): Promise<FindInvoiceFacadeOutputDTO> {
-        return this._findInvoiceUseCase.execute({id: input.id});
+        return this._findInvoiceUseCase.execute(input);
     }
 }
