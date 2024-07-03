@@ -10,19 +10,14 @@ type InvoiceItemProps = {
 
 }
 
-export class InvoiceItem {
-    private _id?: ID;
+export class InvoiceItem extends BaseEntity{
     private _name: string;
     private _price: number;
 
     constructor(props: InvoiceItemProps) {
-        this._id = new ID(props.id);
+        super(new ID(props.id)),
         this._name = props.name;
         this._price = props.price;
-    }
-
-    get id(): string {
-        return this._id.value;
     }
 
     get name(): string {
