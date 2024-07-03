@@ -44,12 +44,23 @@ describe('FindInvoiceUsecase', () => {
         expect(repository.findByID).toHaveBeenCalled();
         expect(repository.findByID).toHaveBeenCalledTimes(1);
 
-        expect(result.id).toEqual(invoice.id);
+        expect(result.id).toEqual(invoice.id.value);
         expect(result.name).toEqual(invoice.name);
         expect(result.document).toEqual(invoice.document);
-        expect(result.address).toEqual(invoice.address);
-        expect(result.items).toEqual(invoice.items);
+        expect(result.address.street).toEqual(invoice.address.street);
+        expect(result.address.number).toEqual(invoice.address.number);
+        expect(result.address.complement).toEqual(invoice.address.complement);
+        expect(result.address.city).toEqual(invoice.address.city);
+        expect(result.address.state).toEqual(invoice.address.state);
+        expect(result.address.zipCode).toEqual(invoice.address.zipCode);
+        expect(result.items.length).toEqual(invoice.items.length);
+        expect(result.items[0].id).toEqual(invoice.items[0].id.value);
+        expect(result.items[0].name).toEqual(invoice.items[0].name);
+        expect(result.items[0].price).toEqual(invoice.items[0].price);
+        expect(result.items[1].id).toEqual(invoice.items[1].id.value);
+        expect(result.items[1].name).toEqual(invoice.items[1].name);
+        expect(result.items[1].price).toEqual(invoice.items[1].price);
+        expect(result.total).toEqual(invoice.calculateTotal());
         expect(result.createdAt).toEqual(invoice.createdAt);
-        expect(result.updatedAt).toEqual(invoice.updatedAt);
     });
 });

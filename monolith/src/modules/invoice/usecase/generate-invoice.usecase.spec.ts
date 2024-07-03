@@ -26,13 +26,11 @@ describe('GenerateInvoiceUsecase', () => {
                     id: '1',
                     name: 'Product 1',
                     price: 100,
-                    quantity: 2,
                 },
                 {
                     id: '2',
                     name: 'Product 2',
                     price: 200,
-                    quantity: 1,
                 }
             ]
         }
@@ -55,6 +53,7 @@ describe('GenerateInvoiceUsecase', () => {
         expect(result.items[1].id).toEqual(input.items[1].id);
         expect(result.items[1].name).toEqual(input.items[1].name);
         expect(result.items[1].price).toEqual(input.items[1].price);
+        expect(result.total).toEqual(300);
     });
 });
 
