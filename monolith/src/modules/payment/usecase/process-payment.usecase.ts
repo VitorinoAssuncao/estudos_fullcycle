@@ -21,7 +21,7 @@ export default class ProcessPaymentUseCase implements UseCaseInterface{
         return {
             id: transaction.id.value,
             status: transaction.status,
-            orderID: transaction.order_id
+            order_id: transaction.order_id
         };
     }
 }

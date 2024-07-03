@@ -22,7 +22,7 @@ describe('ProcessPaymentUsecase', () => {
             order_id: 'order-1'
         });
 
-        expect(result.orderID).toEqual('order-1');
+        expect(result.order_id).toEqual('order-1');
         expect(result.status).toEqual('approved');
     });
 
@@ -44,7 +44,7 @@ describe('ProcessPaymentUsecase', () => {
             order_id: 'order-1'
         });
 
-        expect(result.orderID).toEqual('order-1');
+        expect(result.order_id).toEqual('order-1');
         expect(result.status).toEqual('rejected');
     });
 });

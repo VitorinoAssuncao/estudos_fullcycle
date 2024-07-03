@@ -6,5 +6,5 @@ export interface ProcessPaymentInputDTO{
 export interface ProcessPaymentOutputDTO{
     id: string;
     status: string;
-    orderID: string;
+    order_id: string;
 }
