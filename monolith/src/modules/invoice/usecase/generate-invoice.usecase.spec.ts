@@ -40,12 +40,12 @@ describe('GenerateInvoiceUsecase', () => {
         expect(repository.add).toHaveBeenCalled();
         expect(result.name).toEqual(input.name);
         expect(result.document).toEqual(input.document);
-        expect(result.address.street).toEqual(input.street);
-        expect(result.address.number).toEqual(input.number);
-        expect(result.address.complement).toEqual(input.complement);
-        expect(result.address.city).toEqual(input.city);
-        expect(result.address.state).toEqual(input.state);
-        expect(result.address.zipCode).toEqual(input.zipCode);
+        expect(result.street).toEqual(input.street);
+        expect(result.number).toEqual(input.number);
+        expect(result.complement).toEqual(input.complement);
+        expect(result.city).toEqual(input.city);
+        expect(result.state).toEqual(input.state);
+        expect(result.zipCode).toEqual(input.zipCode);
         expect(result.items.length).toEqual(input.items.length);
         expect(result.items[0].id).toEqual(input.items[0].id);
         expect(result.items[0].name).toEqual(input.items[0].name);
