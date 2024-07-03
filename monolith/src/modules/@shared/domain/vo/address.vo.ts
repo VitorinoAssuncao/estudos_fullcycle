@@ -1,12 +1,12 @@
 import VO from "./vo.interface"
 
 export default class Address implements VO {
-  _street: string = ""
-  _number: string = ""
-  _complement: string = ""
-  _city: string = ""
-  _state: string = ""
-  _zipCode: string = ""
+  private _street: string = ""
+  private _number: string = ""
+  private _complement: string = ""
+  private _city: string = ""
+  private _state: string = ""
+  private _zipCode: string = ""
 
   constructor(street: string, number: string, complement: string, city: string, state: string, zipCode: string) {
     this._street = street
