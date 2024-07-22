@@ -39,15 +39,60 @@ describe('PlaceOrderUsecase', () => {
     });
 
     describe('getProducts method', () => {
+
+        //@ts-expect-error - no params in constructor
+        const placeOrderUsecase = new PlaceOrderUsecase();
+
+        it("should throw error when product not found", async () => {
+            const mockCatalogFacade = {
+                findByID: jest.fn().mockResolvedValue(null)
+            }
+
+            //@ts-expect-error - force set catalogFacade
+            placeOrderUsecase._catalogFacade = mockCatalogFacade;
+
+            //@ts-expect-error - private method
+            await expect(placeOrderUsecase.getProduct("123")).rejects.toThrow("Product 123 not found");
+        })
+
+        it("should return the product when found", async () => {
+            const mockCatalogFacade = {
+                findByID: jest.fn().mockResolvedValue({
+                    id: "123",
+                    name: "Product 123",
+                    description: "Product 123 description",
+                    salesPrice: 10
+                })
+            }
+
+            //@ts-expect-error - force set catalogFacade
+            placeOrderUsecase._catalogFacade = mockCatalogFacade;
+
+            //@ts-expect-error - private method
+            const got = await placeOrderUsecase.getProduct("123");
+            
+            expect(got.id.value).toBe("123");
+            expect(got.name).toBe("Product 123");
+            expect(got.description).toBe("Product 123 description");
+            expect(got.salesPrice).toBe(10);
+
+            expect(mockCatalogFacade.findByID).toHaveBeenCalledTimes(1);
+        })
+
+    });
+
+    describe('execute method', () => {
         const mockDate = new Date(2021, 1, 1);
         
         beforeAll(() =>{
             jest.useFakeTimers();
             jest.setSystemTime(mockDate);
-        })
+        });
 
-    });
-    describe('execute method', () => {
+        afterAll(() =>{
+            jest.useRealTimers();
+        });
+
         it("should throw error when client not found", async () => {
             const mockClientFacade = {
                 findClient: jest.fn().mockResolvedValue(null)

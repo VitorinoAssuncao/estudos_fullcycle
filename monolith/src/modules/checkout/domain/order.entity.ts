@@ -8,7 +8,7 @@ type OrderProps = {
     id?: ID;
     client: Client;
     products: Product[];
-    status: string;
+    status?: string;
 }
 
 export default class Order extends BaseEntity implements AggregateRoot{
