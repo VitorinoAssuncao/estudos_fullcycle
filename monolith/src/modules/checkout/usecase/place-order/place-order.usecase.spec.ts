@@ -150,11 +150,13 @@ describe('PlaceOrderUsecase', () => {
                 name: "Client 123",
                 document: "9999",
                 email: "client@gmail.com",
+                address:{
                 street: "Street 123",
                 number: "123",
                 city: "City",
                 state: "State",
                 zipCode: "12345",
+            }
             }
 
             const mockClientFacade = {
@@ -172,7 +174,22 @@ describe('PlaceOrderUsecase', () => {
             }
 
             const mockInvoiceFacade = {
-                generateInvoice: jest.fn().mockReturnValue("INV-123"),
+                generateInvoice: jest.fn().mockReturnValue({
+                    id: "INV-123",
+                    name: "Client 123",
+                    document: "9999",
+                    street: "Street 123",
+                    number: "123",
+                    complement: "",
+                    city: "City",
+                    state: "State",
+                    zipCode: "12345",
+                    items: [
+                        { id: "1", name: "Product 1", price: 10 },
+                        { id: "2", name: "Product 2", price: 20 },
+                    ],
+                    total: 30
+                }),
                 findInvoice: jest.fn()
             } 
 
@@ -229,6 +246,36 @@ describe('PlaceOrderUsecase', () => {
                 expect(got.invoiceID).toBeNull();
                 expect(got.total).toBe(30);
                 expect(got.status).toBe("pending");
+            })
+
+            it("should be approved", async () => {
+
+                mockPaymentFacade.processPayment = mockPaymentFacade.processPayment.mockResolvedValue({
+                    id: "PAY-123",
+                    status: "approved",
+                    order_id: "1"
+                });
+
+                const input: PlaceOrderInputDTO ={
+                    clientID: "123",
+                    products: [
+                        { productID: "1" },
+                        { productID: "2" },
+                    ],
+                }
+
+                
+                const got = await placeOrderUsecase.execute(input);
+
+                expect(mockClientFacade.findClient).toHaveBeenCalledTimes(1);
+                expect(mockValidateProducts).toHaveBeenCalledTimes(1);
+                expect(mockGetProduct).toHaveBeenCalledTimes(2);
+                expect(mockPaymentFacade.processPayment).toHaveBeenCalledTimes(1);
+                expect(mockInvoiceFacade.generateInvoice).toHaveBeenCalledTimes(1);
+                expect(got.invoiceID).toBe("INV-123");
+                expect(got.orderID).toBeDefined();
+                expect(got.total).toBe(30);
+                expect(got.status).toBe("approved");
             })
 
         })

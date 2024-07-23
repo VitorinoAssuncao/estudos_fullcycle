@@ -74,11 +74,11 @@ export default class PlaceOrderUsecase implements UseCaseInterface{
                 name: client.name,
                 document: client.document,
                 street: client.address.street,
-                number: myClient.address.number,
-                complement: myClient.address.complement,
-                city: myClient.address.city,
-                state: myClient.address.state,
-                zipCode: myClient.address.zipCode,
+                number: client.address.number,
+                complement: client.address.complement,
+                city: client.address.city,
+                state: client.address.state,
+                zipCode: client.address.zipCode,
                 items: products.map(product => ({
                     id: product.id.value,
                     name: product.name,
@@ -87,9 +87,8 @@ export default class PlaceOrderUsecase implements UseCaseInterface{
             }) : null;
 
         payment.status === "approved" && order.approved();
-        
         this._checkoutRepository.addOrder(order);
-
+        
         return {
             orderID: order.id.value,
             invoiceID: payment.status === "approved" ? invoice.id : null,
