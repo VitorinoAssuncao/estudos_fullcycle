@@ -217,13 +217,18 @@ describe('PlaceOrderUsecase', () => {
                     ],
                 }
 
-                await expect(placeOrderUsecase.execute(input)).rejects.toThrow("Payment error");
+                
+                const got = await placeOrderUsecase.execute(input);
 
                 expect(mockClientFacade.findClient).toHaveBeenCalledTimes(1);
                 expect(mockValidateProducts).toHaveBeenCalledTimes(1);
                 expect(mockGetProduct).toHaveBeenCalledTimes(2);
                 expect(mockPaymentFacade.processPayment).toHaveBeenCalledTimes(1);
                 expect(mockInvoiceFacade.generateInvoice).toHaveBeenCalledTimes(0);
+                expect(got.orderID).toBeDefined();
+                expect(got.invoiceID).toBeNull();
+                expect(got.total).toBe(30);
+                expect(got.status).toBe("pending");
             })
 
         })

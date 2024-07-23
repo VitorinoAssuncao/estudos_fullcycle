@@ -53,6 +53,7 @@ export default class PlaceOrderUsecase implements UseCaseInterface{
         const myClient = new Client({
             id: new ID(input.clientID),
             name: client.name,
+            document: client.document,
             email: client.email,
             address: client.address
         })
@@ -83,12 +84,15 @@ export default class PlaceOrderUsecase implements UseCaseInterface{
                     name: product.name,
                     price: product.salesPrice
                 }))
-            })
+            }) : null;
 
+        payment.status === "approved" && order.approved();
+        
+        this._checkoutRepository.addOrder(order);
 
         return {
             orderID: order.id.value,
-            invoiceID: "",
+            invoiceID: payment.status === "approved" ? invoice.id : null,
             status: order.status,
             total: order.total,
             products: products.map(product => ({productID: product.id.value}))

@@ -20,6 +20,7 @@ export interface FindClientFacadeInputDTO {
 export interface FindClientFacadeOutputDTO {
     id: string;
     name: string;
+    document: string;
     email: string;
     address: {
         street: string;
