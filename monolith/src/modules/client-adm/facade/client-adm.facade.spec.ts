@@ -29,15 +29,22 @@ describe('ClientADM unit test', () => {
         await facade.addClient({
             id: '1',
             name: 'Client 1',
+            document: "123456789",
             email: 'email@teste',
-            address: 'endereço teste',
+            address: {
+                street: 'rua teste',
+                number: '123',
+                complement: 'apto 123',
+                city: 'cidade teste',
+                state: 'SP',
+                zipCode: '12345678'
+            },
         });
 
         const result = await ClientModel.findByPk('1');
 
         expect(result.name).toEqual('Client 1');
         expect(result.email).toEqual('email@teste');
-        expect(result.address).toEqual('endereço teste');
     });
 
     it('should find a client', async () => {
@@ -46,8 +53,14 @@ describe('ClientADM unit test', () => {
         await ClientModel.create({
             id: '1',
             name: 'Client 1',
+            document: '123456789',
             email: 'email@teste',
-            address: 'endereço teste',
+            street: 'endereço teste',
+            number: '123',
+            complement: 'complemento teste',
+            city: 'cidade teste',
+            state: 'SP',
+            zipCode: '12345678',
             createdAt: new Date(),
             updatedAt: new Date(),
         });
@@ -57,7 +70,7 @@ describe('ClientADM unit test', () => {
         expect(result.id).toEqual('1');
         expect(result.name).toEqual('Client 1');
         expect(result.email).toEqual('email@teste');
-        expect(result.address).toEqual('endereço teste');
+        expect(result.address.street).toEqual('endereço teste');
     });
 
 

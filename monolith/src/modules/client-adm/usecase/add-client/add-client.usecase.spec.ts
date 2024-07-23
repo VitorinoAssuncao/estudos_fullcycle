@@ -14,8 +14,16 @@ describe('AddClientUsecase', () => {
         const input = {
             id: '1',
             name: 'Client 1',
+            document: "123456789",
             email: 'email@teste',
-            address: 'endereço teste'
+            address: {
+                street: 'Rua 1',
+                number: '123',
+                complement: 'Complemento',
+                city: 'Cidade',
+                state: 'Estado',
+                zipCode: '12345678'
+            }
         };
 
 
@@ -25,6 +33,6 @@ describe('AddClientUsecase', () => {
         expect(result.id).toEqual(input.id);
         expect(result.name).toEqual(input.name);
         expect(result.email).toEqual(input.email);
-        expect(result.address).toEqual(input.address);
+        expect(result.address.street).toEqual(input.address.street);
     });
 });

@@ -5,8 +5,14 @@ import FindClientUsecase from "./find-client.usecase";
 const client = new Client({
     id: new ID('1'),
     name: 'Client 1',
+    document: '123456789',
     email: 'email@teste',
-    address: 'endereço teste'
+    street: 'Street 1',
+    number: '123',
+    complement: 'Complement 1',
+    city: 'City 1',
+    state: 'State 1',
+    zipCode: '12345678',
 });
 
 
@@ -33,7 +39,8 @@ describe('FindClientUsecase', () => {
         expect(repository.findByID).toHaveBeenCalled();
         expect(result.id).toEqual(client.id.value);
         expect(result.name).toEqual(client.name);
+        expect(result.document).toEqual(client.document);
         expect(result.email).toEqual(client.email);
-        expect(result.address).toEqual(client.address);
+        expect(result.address.street).toEqual(client.street);
     });
 });

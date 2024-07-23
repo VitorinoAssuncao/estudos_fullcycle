@@ -8,8 +8,14 @@ export default class ClientRepository  implements ClientGateway{
         await ClientModel.create({
             id: client.id.value,
             name: client.name,
+            document: client.document,
             email: client.email,
-            address: client.address,
+            street: client.street,
+            number: client.number,
+            complement: client.complement,
+            city: client.city,
+            state: client.state,
+            zipCode: client.zipCode,
             createdAt: client.createdAt,
             updatedAt: client.updatedAt
         });
@@ -24,8 +30,14 @@ export default class ClientRepository  implements ClientGateway{
         return new Client({
             id: new ID(client.id),
             name: client.name,
+            document: client.document,
             email: client.email,
-            address: client.address,
+            street: client.street,
+            number: client.number,
+            complement: client.complement,
+            city: client.city,
+            state: client.state,
+            zipCode: client.zipCode,
             createdAt: client.createdAt,
             updatedAt: client.updatedAt
         });

@@ -2,6 +2,9 @@ import { NIL } from "uuid";
 import FindClientUsecase from "../../../client-adm/usecase/findClient/find-client.usecase";
 import PlaceOrderUsecase from "./place-order.usecase";
 import CheckStock from "../../../product-adm/usecase/add-product/check-stock.usecase";
+import ID from "../../../@shared/domain/vo/id.vo";
+import FindInvoiceUsecase from "../../../invoice/usecase/find-invoice.usecase";
+import { PlaceOrderInputDTO } from "./place-order.dto";
 
 describe('PlaceOrderUsecase', () => {
     describe('validateProducts method', () => {
@@ -140,5 +143,89 @@ describe('PlaceOrderUsecase', () => {
 
             await expect(placeOrderUsecase.execute(input)).rejects.toThrow("No products selected");
         });
+
+        describe('should place an order', () => {
+            const clientProps = {
+                ID: new ID("123"),
+                name: "Client 123",
+                document: "9999",
+                email: "client@gmail.com",
+                street: "Street 123",
+                number: "123",
+                city: "City",
+                state: "State",
+                zipCode: "12345",
+            }
+
+            const mockClientFacade = {
+                findClient: jest.fn().mockResolvedValue(clientProps),
+                addClient: jest.fn()
+            }
+
+            const mockPaymentFacade = {
+                processPayment: jest.fn()
+            }
+
+            const mockCheckoutRepository = {
+                addOrder: jest.fn(),
+                findOrder: jest.fn()
+            }
+
+            const mockInvoiceFacade = {
+                generateInvoice: jest.fn().mockReturnValue("INV-123"),
+                findInvoice: jest.fn()
+            } 
+
+            const placeOrderUsecase = new PlaceOrderUsecase(
+                mockClientFacade, 
+                null, 
+                null,
+                mockCheckoutRepository,
+                mockInvoiceFacade,
+                mockPaymentFacade,
+            )
+
+            const products = {
+                "1":{ id: new ID("1"), name: "Product 1", description: "Product 1 description", salesPrice: 10},
+                "2":{ id: new ID("2"), name: "Product 2", description: "Product 2 description", salesPrice: 20},
+            }
+
+            const mockValidateProducts = jest
+            //@ts-expect-error - spy on private method
+            .spyOn(placeOrderUsecase, 'validateProducts')
+            //@ts-expect-error - spy on private method
+            .mockResolvedValue(null);
+
+            const mockGetProduct = jest
+            //@ts-expect-error - spy on private method
+            .spyOn(placeOrderUsecase, 'getProduct')
+            //@ts-expect-error - spy on private method
+            .mockImplementation((id) => Promise.resolve(products[id]));
+
+            it("should not be approved", async () => {
+                mockPaymentFacade.processPayment = mockPaymentFacade.processPayment.mockResolvedValue({
+                    id: "PAY-123",
+                    status: "error",
+                    order_id: "1"
+                });
+
+                const input: PlaceOrderInputDTO ={
+                    clientID: "123",
+                    products: [
+                        { productID: "1" },
+                        { productID: "2" },
+                    ],
+                }
+
+                await expect(placeOrderUsecase.execute(input)).rejects.toThrow("Payment error");
+
+                expect(mockClientFacade.findClient).toHaveBeenCalledTimes(1);
+                expect(mockValidateProducts).toHaveBeenCalledTimes(1);
+                expect(mockGetProduct).toHaveBeenCalledTimes(2);
+                expect(mockPaymentFacade.processPayment).toHaveBeenCalledTimes(1);
+                expect(mockInvoiceFacade.generateInvoice).toHaveBeenCalledTimes(0);
+            })
+
+        })
     });
 });
