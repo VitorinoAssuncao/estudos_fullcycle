@@ -39,3 +39,16 @@ productRoute.get("/:id", async (req: Request, res: Response) => {
     }
 });
 
+productRoute.get("/", async (req: Request, res: Response) => {
+    const usecase = StoreCatalogFacadeFactory.create();
+
+    try{
+
+        const output = await usecase.findAll();
+
+        res.send(output);
+    }catch(error){
+        res.status(500).send(error);
+    }
+});
+

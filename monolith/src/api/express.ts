@@ -2,7 +2,6 @@ import express, {Express} from 'express';
 import { Sequelize } from 'sequelize-typescript';
 import ClientModel from '../modules/client-adm/repository/client.model';
 import {clientRoute} from './routes/client';
-import { migrator } from "../migration/migrator";
 import { productRoute } from './routes/product';
 import ProductModel from '../modules/product-adm/repository/product.model';
 import StoreProductModel from '../modules/store-catalog/repository/product.model';
@@ -22,10 +21,8 @@ async  function setupDB() {
         logging: false
     });
 
-   sequelize.addModels([ClientModel, ProductModel, StoreProductModel]);
+   sequelize.addModels([ClientModel, StoreProductModel, ProductModel]);
 
-   migrator(sequelize).up();
-   
    sequelize.sync(); 
 }
 
