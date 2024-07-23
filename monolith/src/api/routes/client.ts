@@ -1,9 +1,9 @@
 import express, {Request, Response} from "express";
 import ClientADMFacadeFactory from "../../modules/client-adm/factory/facade.factory";
 
-export const customerRoute = express.Router();
+export const clientRoute = express.Router();
 
-customerRoute.post("/", async (req: Request, res: Response) => {
+clientRoute.post("/", async (req: Request, res: Response) => {
     const usecase = ClientADMFacadeFactory.create();
 
     try{
