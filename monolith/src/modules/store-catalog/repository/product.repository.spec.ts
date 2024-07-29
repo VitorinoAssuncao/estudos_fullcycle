@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import ProductModel from "./product.model";
+import StoreProductModel from "./product.model";
 import ProductRepository from "./product.repository";
 
 describe('ProductRepository', () => {
@@ -13,7 +13,7 @@ describe('ProductRepository', () => {
             sync: { force: true },
         });
 
-        sequelize.addModels([ProductModel]);
+        sequelize.addModels([StoreProductModel]);
 
         await sequelize.sync();
     })
@@ -23,16 +23,20 @@ describe('ProductRepository', () => {
     })
 
     it('should find all products', async () => {
-        await ProductModel.create({
+        await StoreProductModel.create({
             name: 'Product 1',
             description: 'Description of product 1',
             salesPrice: 100,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
 
-        await ProductModel.create({
+        await StoreProductModel.create({
             name: 'Product 2',
             description: 'Description of product 2',
             salesPrice: 200,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
 
         const productRepository = new ProductRepository();
@@ -49,11 +53,13 @@ describe('ProductRepository', () => {
     });
 
     it('should find one product', async () => {
-        await ProductModel.create({
+        await StoreProductModel.create({
             id: '1',
             name: 'Product 1',
             description: 'Description of product 1',
             salesPrice: 100,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
 
 

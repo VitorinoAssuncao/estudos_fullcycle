@@ -28,8 +28,14 @@ describe('ClientRepository', () => {
         const client = new Client({
             id: new ID('1'),
             name: 'Client 1',
+            document: "123456789",
             email: 'email@teste',
-            address: 'endereço teste',
+            street: 'rua teste',
+            number: '123',
+            complement: 'apto 123',
+            city: 'cidade teste',
+            state: 'SP',
+            zipCode: '12345678'
         })
 
         const clientRepository = new ClientRepository();
@@ -41,7 +47,7 @@ describe('ClientRepository', () => {
         expect(result.id).toEqual(client.id.value);
         expect(result.name).toEqual(client.name);
         expect(result.email).toEqual(client.email);
-        expect(result.address).toEqual(client.address);
+        expect(result.document).toEqual(client.document);
         expect(result.createdAt).toEqual(client.createdAt);
         expect(result.updatedAt).toEqual(client.updatedAt);
     });
@@ -51,7 +57,13 @@ describe('ClientRepository', () => {
             id: '1',
             name: 'Client 1',
             email: 'email@teste',
-            address: 'endereço teste',
+            document: '123456789',
+            street: 'rua teste',
+            number: '123',
+            complement: 'apto 123',
+            city: 'cidade teste',
+            state: 'SP',
+            zipCode: '12345678',
             createdAt: new Date(),
             updatedAt: new Date()
         })
@@ -65,7 +77,6 @@ describe('ClientRepository', () => {
         expect(result.id.value).toEqual(client.id);
         expect(result.name).toEqual(client.name);
         expect(result.email).toEqual(client.email);
-        expect(result.address).toEqual(client.address);
         expect(result.createdAt).toEqual(client.createdAt);
         expect(result.updatedAt).toEqual(client.updatedAt);
     });
