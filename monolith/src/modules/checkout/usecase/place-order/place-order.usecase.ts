@@ -38,12 +38,14 @@ export default class PlaceOrderUsecase implements UseCaseInterface{
      }
 
     async execute(input: PlaceOrderInputDTO): Promise<PlaceOrderOutputDTO> {    
+        console.log(input)
+
         const client  = await this._clientFacade.findClient({id: input.clientID});
         
         if (!client) {
             throw new Error("Client not found");
         }
-        
+
         await this.validateProducts(input.products);
 
         const products = await Promise.all(

@@ -16,6 +16,7 @@ describe('AddProductUsecase unit test', () => {
             name: 'Product 1',
             description: 'Description of product 1',
             purchasePrice: 100,
+            salesPrice: 150,
             stock: 10,
         }
         
@@ -26,6 +27,7 @@ describe('AddProductUsecase unit test', () => {
         expect(result.name).toEqual(input.name);
         expect(result.description).toEqual(input.description);
         expect(result.purchasePrice).toEqual(input.purchasePrice);
+        expect(result.salesPrice).toEqual(input.salesPrice);
         expect(result.stock).toEqual(input.stock);
     });
 });

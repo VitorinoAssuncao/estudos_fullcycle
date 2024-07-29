@@ -28,6 +28,7 @@ describe('ProductRepository unit test', () => {
             name: 'Product 1',
             description: 'Description of product 1',
             purchasePrice: 100,
+            salesPrice: 150,
             stock: 10,
         })
 
@@ -41,6 +42,7 @@ describe('ProductRepository unit test', () => {
         expect(result.name).toEqual(product.name);
         expect(result.description).toEqual(product.description);
         expect(result.purchasePrice).toEqual(product.purchasePrice);
+        expect(result.salesPrice).toEqual(product.salesPrice);
         expect(result.stock).toEqual(product.stock);
     });
 
@@ -49,6 +51,7 @@ describe('ProductRepository unit test', () => {
             name: 'Product 1',
             description: 'Description of product 1',
             purchasePrice: 100,
+            salesPrice: 150,
             stock: 10,
         })
 
