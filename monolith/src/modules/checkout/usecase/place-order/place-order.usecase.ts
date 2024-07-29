@@ -80,7 +80,6 @@ export default class PlaceOrderUsecase implements UseCaseInterface{
                 state: client.address.state,
                 zipCode: client.address.zipCode,
                 items: products.map(product => ({
-                    id: product.id.value,
                     name: product.name,
                     price: product.salesPrice
                 }))

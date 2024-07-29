@@ -8,7 +8,7 @@ export interface GenerateInvoiceFacadeInputDTO {
     state: string;
     zipCode: string;
     items: {
-      id: string;
+      id?: string;
       name: string;
       price: number;
     }[];
