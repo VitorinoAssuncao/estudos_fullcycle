@@ -27,12 +27,16 @@ describe('ProductRepository', () => {
             name: 'Product 1',
             description: 'Description of product 1',
             salesPrice: 100,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
 
         await StoreProductModel.create({
             name: 'Product 2',
             description: 'Description of product 2',
             salesPrice: 200,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
 
         const productRepository = new ProductRepository();
@@ -54,6 +58,8 @@ describe('ProductRepository', () => {
             name: 'Product 1',
             description: 'Description of product 1',
             salesPrice: 100,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
 
 
