@@ -13,6 +13,7 @@ import { checkoutRoute } from './routes/checkout';
 import InvoiceItemModel from '../modules/invoice/repository/invoice-item.model';
 import InvoiceModel from '../modules/invoice/repository/invoice.model';
 import TransactionModel from '../modules/payment/repository/transaction.model';
+import { invoiceRoute } from './routes/invoice';
 
 export const app: Express = express();
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/client", clientRoute);
 app.use("/product", productRoute);
 app.use("/checkout", checkoutRoute);
+app.use("/invoice", invoiceRoute);
 
 export let sequelize: Sequelize;
 
