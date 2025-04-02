@@ -15,7 +15,7 @@ jobs:
         uses: peter-evans/find-comment@v3
         id: fc
         with:
-          comment-author: VitorinoAssuncao
+          comment-author: vitorinoassuncao
           direction: last
       - run: |
           echo ${{ steps.fc.outputs.comment-id }}
