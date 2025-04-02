@@ -8,21 +8,10 @@ jobs:
   commentCreated:
     runs-on: ubuntu-latest
     steps:
-      - name: Listar
-        id: list
-        run: |
-          pwd
-
-      - name: Render template
-        id: template
-        uses: chuhlomin/render-template@v1.4
-        with:
-          template: workflows/templates/auto_answer_changeman.md
-
       - name: Edit Comment
         if: ${{  github.event.comment.user.login == 'VitorinoAssuncao' }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ github.event.comment.id }}
-          body: ${{ steps.template.outputs.result }}
+          body-path: 'workflows/templates/auto_answer_changeman.md'
           edit-mode: replace
