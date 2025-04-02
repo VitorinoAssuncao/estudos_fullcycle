@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Add reaction
         uses: peter-evans/create-or-update-comment@v4
-        if: ${{github.event.comment.author == 'VitorinoAssuncao'}}
+        if: ${{github.event.comment.user == 'VitorinoAssuncao'}}
         with:
           comment-id: ${{ github.event.comment.id }}
           reactions: eyes
