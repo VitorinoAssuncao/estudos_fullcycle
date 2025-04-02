@@ -8,20 +8,9 @@ jobs:
   commentCreated:
     runs-on: ubuntu-latest
     steps:
-    - name: Find Comment
-      uses: peter-evans/find-comment@v3
-      id: fc
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'VitorinoAssuncao'
-        body-includes: Build output
-
-    - name: Create or update comment
-      uses: peter-evans/create-or-update-comment@v4
-      with:
-        comment-id: ${{ steps.fc.outputs.comment-id }}
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          Build output
-          ${{ steps.build.outputs.build-log }}
-        edit-mode: replace
+      - name: Add reaction
+        uses: peter-evans/create-or-update-comment@v4
+        if: ${{github.event.comment.author == 'VitorinoAssuncao'}}
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: eyes
