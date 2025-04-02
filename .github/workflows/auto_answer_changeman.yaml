@@ -12,7 +12,7 @@ jobs:
         id: template
         uses: chuhlomin/render-template@v1.4
         with:
-          template: .github/comment-template.md
+          template: comment-template.md
           vars: |
             foo: this
             bar: that
