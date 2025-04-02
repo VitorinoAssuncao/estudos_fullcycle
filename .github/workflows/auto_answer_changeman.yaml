@@ -10,9 +10,10 @@ jobs:
     steps:
       - name: Render template
         id: template
-        uses: chuhlomin/render-template@v1.4
-        with:
-          template: .github/templates/auto_answer_changeman.md
+#        uses: chuhlomin/render-template@v1.4
+#        with:
+#          template: .github/templates/auto_answer_changeman.md
+        run: pwd
 
       - name: Edit Comment
         if: ${{  github.event.comment.user.login == 'VitorinoAssuncao' }}
