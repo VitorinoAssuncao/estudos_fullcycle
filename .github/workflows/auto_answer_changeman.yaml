@@ -8,11 +8,17 @@ jobs:
   commentCreated:
     runs-on: ubuntu-latest
     steps:
+      - name: Listar
+        id: list
+        run: |
+          pwd
+          ls -la
+
       - name: Render template
         id: template
         uses: chuhlomin/render-template@v1.4
         with:
-          template: https://github.com/VitorinoAssuncao/estudos_fullcycle/blob/master/.github/templates/auto_answer_changeman.md
+          template: ./.github/templates/auto_answer_changeman.md
 
       - name: Edit Comment
         if: ${{  github.event.comment.user.login == 'VitorinoAssuncao' }}
