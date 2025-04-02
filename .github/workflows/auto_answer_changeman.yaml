@@ -25,29 +25,31 @@ jobs:
           echo "$DESCRIPTION"
 
           # Extrai apenas a seção "Descrição"
-          EXTRACTED_DESCRIPTION=$(echo "$DESCRIPTION" | awk '/## :cyclone: Descrição/{flag=1; next} /## :mag_right: Evidências/{flag=0} flag')
+          EXTRACTED_DESCRIPTION=$(echo "$DESCRIPTION" | sed -n '/## :cyclone: Descrição/,/## :mag_right: Evidências/p' | sed '1d;$d')
 
           echo "Extracted PR Description: $EXTRACTED_DESCRIPTION"
 
           # Passa o valor como variável do GitHub Actions
-          echo "EXTRACTED_DESCRIPTION=$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
+          echo "EXTRACTED_DESCRIPTION<<EOF" >> $GITHUB_ENV
+          echo "$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Use the extracted description field
         run: |
-          echo "The extracted description is: ${{ env.FIELD_VALUE }}"
+          echo "The extracted description is: ${{ env.EXTRACTED_DESCRIPTION }}"
 
-#      - name: Render template
-#        id: template
-#        uses: chuhlomin/render-template@v1.4
-#        with:
-#          template: .github/answer-changebot-template.md
-#          vars: |
-#            foo: this
-#
-#      - name: Edit Comment
-#        if: ${{  github.event.comment.user.login == 'VitorinoAssuncao' }}
-#        uses: peter-evans/create-or-update-comment@v4
-#        with:
-#          comment-id: ${{ github.event.comment.id }}
-#          body: ${{ steps.template.outputs.result }}
-#          edit-mode: replace
+      - name: Render template
+        id: template
+        uses: chuhlomin/render-template@v1.4
+        with:
+          template: .github/answer-changebot-template.md
+          vars: |
+            description: ${{ env.EXTRACTED_DESCRIPTION }}
+
+      - name: Edit Comment
+        if: ${{ github.event.comment.user.login == 'VitorinoAssuncao' }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          body: ${{ steps.template.outputs.result }}
+          edit-mode: replace

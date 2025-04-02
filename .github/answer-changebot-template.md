@@ -26,7 +26,7 @@ Selecione a categoria da mudança colocando um **X** na caixa correspondente:
 
 ### 📝 Detalhes da Mudança
 
-- **Descrição da Mudança**: {{ .foo }}
+- **Descrição da Mudança**: {{ .description }}
 
 - **Objetivo da Mudança**: N/A
 
