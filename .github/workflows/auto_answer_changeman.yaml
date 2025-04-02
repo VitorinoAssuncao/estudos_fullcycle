@@ -4,10 +4,22 @@ on:
   issue_comment:
     types: [created]
 
+  workflow_dispatch:
+
 jobs:
   edit-pr-comment:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != ''
     steps:
-      - name: Debug
-        run: echo "Comentário detectado no PR!"
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          comment-author: VitorinoAssuncao
+          direction: last
+      - run: |
+          echo ${{ steps.fc.outputs.comment-id }}
+          echo ${{ steps.fc.outputs.comment-node-id }}
+          echo ${{ steps.fc.outputs.comment-body }}
+          echo ${{ steps.fc.outputs.comment-author }}
+          echo ${{ steps.fc.outputs.comment-created-at }}
