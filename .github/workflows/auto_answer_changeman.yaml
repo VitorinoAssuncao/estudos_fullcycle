@@ -1,0 +1,13 @@
+name: answer changeman-bot automatically
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  edit-pr-comment:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request != ''
+    steps:
+      - name: Debug
+        run: echo "Comentário detectado no PR!"
