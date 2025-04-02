@@ -13,5 +13,5 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ github.event.comment.id }}
-          body-path: '../answer-changeman.md'
+          body-path: 'answer-changeman.md'
           edit-mode: replace
