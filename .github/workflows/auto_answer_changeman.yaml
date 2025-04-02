@@ -4,24 +4,12 @@ on:
   issue_comment:
     types: [created]
 
-  workflow_dispatch:
-
 jobs:
-  edit-pr-comment:
+  commentCreated:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup repo
-        uses: actions/checkout@v3
-
-      - name: Find Comment
-        uses: peter-evans/find-comment@v3
-        id: fc
+      - name: Add reaction
+        uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-includes: teste
-      - run: |
-          echo ${{ steps.fc.outputs.comment-id }}
-          echo ${{ steps.fc.outputs.comment-node-id }}
-          echo ${{ steps.fc.outputs.comment-body }}
-          echo ${{ steps.fc.outputs.comment-author }}
-          echo ${{ steps.fc.outputs.comment-created-at }}
+          comment-id: ${{ github.event.comment.id }}
+          reactions: eyes
