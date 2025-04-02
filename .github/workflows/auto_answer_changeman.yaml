@@ -13,4 +13,4 @@ jobs:
 #        with:
 #          comment-id: ${{ github.event.comment.id }}
 #          reactions: eyes
-        run: echo "${{ github.event.comment.id }} \n ${{ github.event.comment.user.login }}"
+        run: echo "${{  github.event.comment.user.login == 'VitorinoAssuncao' }}"
