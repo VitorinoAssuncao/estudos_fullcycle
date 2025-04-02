@@ -13,7 +13,7 @@ jobs:
 #        uses: chuhlomin/render-template@v1.4
 #        with:
 #          template: .github/templates/auto_answer_changeman.md
-        run: ls -la
+        run: ls
 
       - name: Edit Comment
         if: ${{  github.event.comment.user.login == 'VitorinoAssuncao' }}
