@@ -12,7 +12,7 @@ jobs:
         id: list
         run: |
           pwd
-          ls -la
+          ls
 
       - name: Render template
         id: template
