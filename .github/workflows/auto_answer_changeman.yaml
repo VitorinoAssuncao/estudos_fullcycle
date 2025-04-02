@@ -18,7 +18,7 @@ jobs:
         id: template
         uses: chuhlomin/render-template@v1.4
         with:
-          template: ./.github/templates/auto_answer_changeman.md
+          template: ./templates/auto_answer_changeman.md
 
       - name: Edit Comment
         if: ${{  github.event.comment.user.login == 'VitorinoAssuncao' }}
