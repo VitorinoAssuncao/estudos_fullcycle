@@ -8,6 +8,9 @@ jobs:
   commentCreated:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Render template
         id: template
         uses: chuhlomin/render-template@v1.4
