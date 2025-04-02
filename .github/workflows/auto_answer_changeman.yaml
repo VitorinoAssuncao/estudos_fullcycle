@@ -18,7 +18,6 @@ jobs:
           template: .github/templates/comment-template.md
           vars: |
             foo: this
-            bar: that
 
       - name: Edit Comment
         if: ${{  github.event.comment.user.login == 'VitorinoAssuncao' }}
