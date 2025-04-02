@@ -21,11 +21,8 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r '.body')
           
-          echo "Full PR Description:"
-          echo "$DESCRIPTION"
-
           # Extrai o campo "Descrição" específico (supondo que está em Markdown com "Descrição:")
-          FIELD_VALUE=$(echo "$DESCRIPTION" | grep -oP '(?<=Descrição: ).*')
+          FIELD_VALUE=$(echo "$DESCRIPTION" | grep -oP '(?<=Descrição ).*')
           
           echo "Extracted Field Value: $FIELD_VALUE"
 
