@@ -10,4 +10,4 @@ jobs:
     if: github.event.issue.pull_request != ''
     steps:
       - name: Debug
-        run: echo "Comentário detectado no PR!"
+        run: echo "Outro"
