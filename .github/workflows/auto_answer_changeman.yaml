@@ -16,7 +16,7 @@ jobs:
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: vitorinoassuncao
+          comment-author: VitorinoAssuncao
           direction: last
       - run: |
           echo ${{ steps.fc.outputs.comment-id }}
