@@ -10,6 +10,9 @@ jobs:
   edit-pr-comment:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup repo
+        uses: actions/checkout@v3
+
       - name: Find Comment
         uses: peter-evans/find-comment@v3
         id: fc
