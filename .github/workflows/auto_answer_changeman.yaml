@@ -13,4 +13,4 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ github.event.comment.id }}
-          reactions: eyes
+          body: "Troca para isso"
