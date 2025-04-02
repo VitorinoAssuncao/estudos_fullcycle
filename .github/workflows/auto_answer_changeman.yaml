@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add reaction
-        uses: peter-evans/create-or-update-comment@v4
-        if: ${{github.event.comment.user.name == 'VitorinoAssuncao'}}
-        with:
-          comment-id: ${{ github.event.comment.id }}
-          reactions: eyes
+#        uses: peter-evans/create-or-update-comment@v4
+#        with:
+#          comment-id: ${{ github.event.comment.id }}
+#          reactions: eyes
+        run: echo "${{ github.event.comment.user.name}}"
