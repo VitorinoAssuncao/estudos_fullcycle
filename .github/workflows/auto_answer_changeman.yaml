@@ -21,13 +21,16 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r '.body')
           
-          # Extrai o campo "Descrição" específico (supondo que está em Markdown com "Descrição:")
-          FIELD_VALUE=$(echo "$DESCRIPTION" | grep -oP '(?<=Descrição ).*')
-          
-          echo "Extracted Field Value: $FIELD_VALUE"
+          echo "Full PR Description:"
+          echo "$DESCRIPTION"
 
-          # Passa o valor como uma variável do GitHub Actions
-          echo "FIELD_VALUE=$FIELD_VALUE" >> $GITHUB_ENV
+          # Extrai apenas a seção "Descrição"
+          EXTRACTED_DESCRIPTION=$(echo "$DESCRIPTION" | awk '/## :cyclone: Descrição/{flag=1; next} /## :mag_right: Evidências/{flag=0} flag')
+
+          echo "Extracted PR Description: $EXTRACTED_DESCRIPTION"
+
+          # Passa o valor como variável do GitHub Actions
+          echo "EXTRACTED_DESCRIPTION=$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
 
       - name: Use the extracted description field
         run: |
