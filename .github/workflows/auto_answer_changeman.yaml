@@ -14,3 +14,4 @@ jobs:
         with:
           comment-id: ${{ github.event.comment.id }}
           body: "Troca para isso"
+          edit-mode: replace
