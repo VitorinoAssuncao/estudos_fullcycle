@@ -15,7 +15,7 @@ jobs:
       - name: Get PR number
         run: echo "PR_NUMBER=${{ github.event.issue.number }}" >> $GITHUB_ENV
 
-      - name: Get PR description using API
+      - name: Get PR description using API.
         run: |
           DESCRIPTION=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
@@ -27,12 +27,18 @@ jobs:
           # Extrai apenas a seção "Descrição"
           EXTRACTED_DESCRIPTION=$(echo "$DESCRIPTION" | sed -n '/## :cyclone: Descrição/,/## :mag_right: Evidências/p' | sed '1d;$d')
 
+          # Verifica se foi extraído algo, se não, define um fallback
+          if [[ -z "$EXTRACTED_DESCRIPTION" ]]; then
+            EXTRACTED_DESCRIPTION="N/A"
+          fi
+
           echo "Extracted PR Description: $EXTRACTED_DESCRIPTION"
 
-          # Passa o valor como variável do GitHub Actions
-          echo "EXTRACTED_DESCRIPTION<<EOF" >> $GITHUB_ENV
-          echo "$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          # Substitui aspas duplas por aspas simples e remove quebras de linha para garantir que seja uma única string
+          SAFE_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | sed "s/\"/'/g" | tr '\n' ' ')
+
+          # Exporta a variável formatada corretamente
+          echo "EXTRACTED_DESCRIPTION=\"$SAFE_DESCRIPTION\"" >> $GITHUB_ENV
 
       - name: Use the extracted description field
         run: |
