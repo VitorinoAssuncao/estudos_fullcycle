@@ -20,18 +20,18 @@ jobs:
           DESCRIPTION=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r '.body')
-
-          # Define o conteúdo completo da descrição como fallback
-          EXTRACTED_DESCRIPTION="$DESCRIPTION"
-
+          
+          # Extrai o trecho entre "Descrição" e "Evidências"
+          EXTRACTED_DESCRIPTION=$(echo "$DESCRIPTION" | awk '/Descrição/{flag=1; next} /Evidências/{flag=0} flag')
+          
           # Verifica se foi extraído algo, se não, define um fallback
           if [[ -z "$EXTRACTED_DESCRIPTION" ]]; then
             EXTRACTED_DESCRIPTION="N/A"
           fi
-
+          
           # Converte quebras de linha em literais "\n"
           EXTRACTED_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | awk '{printf "%s\\n", $0}')
-      
+          
           echo "EXTRACTED_DESCRIPTION=$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
 
       - name: Edit Comment
