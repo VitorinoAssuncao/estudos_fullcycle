@@ -29,6 +29,9 @@ jobs:
             EXTRACTED_DESCRIPTION="N/A"
           fi
 
+          # Converte quebras de linha em literais "\n"
+          EXTRACTED_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | awk '{printf "%s\\n", $0}')
+      
           echo "EXTRACTED_DESCRIPTION=$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
 
       - name: Edit Comment
