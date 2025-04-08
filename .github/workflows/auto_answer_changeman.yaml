@@ -20,37 +20,16 @@ jobs:
           DESCRIPTION=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq -r '.body')
-          
-          echo "Full PR Description:"
-          echo "$DESCRIPTION"
 
-          # Extrai apenas a seção "Descrição"
-          EXTRACTED_DESCRIPTION=$(echo "$DESCRIPTION" | sed -n '/## :cyclone: Descrição/,/## :mag_right: Evidências/p' | sed '1d;$d')
+          # Define o conteúdo completo da descrição como fallback
+          EXTRACTED_DESCRIPTION="$DESCRIPTION"
 
           # Verifica se foi extraído algo, se não, define um fallback
           if [[ -z "$EXTRACTED_DESCRIPTION" ]]; then
             EXTRACTED_DESCRIPTION="N/A"
           fi
 
-          echo "Extracted PR Description: $EXTRACTED_DESCRIPTION"
-
-          # Adiciona caracteres de escape para evitar problemas com o GitHub Actions
-          SAFE_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | sed -E 's/([(){}[\]#:-])/\\\1/g' | tr '\n' ' ')
-
-          # Exporta a variável formatada corretamente usando printf para evitar interpretações inesperadas
-          echo "EXTRACTED_DESCRIPTION=\"$SAFE_DESCRIPTION\"" >> $GITHUB_ENV
-
-      - name: Use the extracted description field
-        run: |
-          echo "The extracted description is: "${{ env.EXTRACTED_DESCRIPTION }}""
-
-      - name: Render template
-        id: template
-        uses: chuhlomin/render-template@v1.4
-        with:
-          template: .github/answer-changebot-template.md
-          vars: |
-            description: "${{ env.EXTRACTED_DESCRIPTION }}"
+          echo "EXTRACTED_DESCRIPTION=$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
 
       - name: Edit Comment
         if: ${{ github.event.comment.user.login == 'VitorinoAssuncao' }}
