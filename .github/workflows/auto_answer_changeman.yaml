@@ -34,8 +34,8 @@ jobs:
 
           echo "Extracted PR Description: $EXTRACTED_DESCRIPTION"
 
-          # Substitui aspas duplas por aspas simples e remove quebras de linha para garantir que seja uma única string
-          SAFE_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | sed "s/\"/'/g" | tr '\n' ' ')
+          # Adiciona caracteres de escape para evitar problemas com o GitHub Actions
+          SAFE_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | sed -E 's/([(){}[\]#:-])/\\\1/g' | tr '\n' ' ')
 
           # Exporta a variável formatada corretamente
           echo "EXTRACTED_DESCRIPTION=\"$SAFE_DESCRIPTION\"" >> $GITHUB_ENV
