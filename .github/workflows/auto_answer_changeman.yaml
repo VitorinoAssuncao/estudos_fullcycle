@@ -34,6 +34,14 @@ jobs:
           
           echo "EXTRACTED_DESCRIPTION=$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
 
+      - name: Render template
+        id: template
+        uses: chuhlomin/render-template@v1.4
+        with:
+          template: .github/answer-changebot-template.md
+          vars: |
+            description: ${{ env.EXTRACTED_DESCRIPTION }}
+
       - name: Edit Comment
         if: ${{ github.event.comment.user.login == 'VitorinoAssuncao' }}
         uses: peter-evans/create-or-update-comment@v4
