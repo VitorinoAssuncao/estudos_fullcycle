@@ -38,11 +38,11 @@ jobs:
           SAFE_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | sed -E 's/([(){}[\]#:-])/\\\1/g' | tr '\n' ' ')
 
           # Exporta a variável formatada corretamente usando printf para evitar interpretações inesperadas
-          printf "EXTRACTED_DESCRIPTION=\"%s\"\n" "$SAFE_DESCRIPTION" >> $GITHUB_ENV
+          echo "EXTRACTED_DESCRIPTION=\"$SAFE_DESCRIPTION\"" >> $GITHUB_ENV
 
       - name: Use the extracted description field
         run: |
-          echo "The extracted description is: ${{ env.EXTRACTED_DESCRIPTION }}"
+          echo "The extracted description is: "${{ env.EXTRACTED_DESCRIPTION }}""
 
       - name: Render template
         id: template
