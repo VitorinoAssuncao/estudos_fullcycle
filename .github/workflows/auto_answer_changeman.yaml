@@ -40,7 +40,7 @@ jobs:
         with:
           template: .github/answer-changebot-template.md
           vars: |
-            description: ${{ env.EXTRACTED_DESCRIPTION }}
+            description: "${{ env.EXTRACTED_DESCRIPTION }}"
 
       - name: Edit Comment
         if: ${{ github.event.comment.user.login == 'VitorinoAssuncao' }}
