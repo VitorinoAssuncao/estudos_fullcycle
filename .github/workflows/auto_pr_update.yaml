@@ -1,0 +1,23 @@
+name: Update PR Values
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label-and-assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign PR Author
+        uses: toshimaru/auto-author-assign@v2.1.1
+
+      - name: Label PR Based on Title
+        uses: TDAK1509/set-label-based-on-pr-title@v1
+        with:
+          words: bug;feature;docs
+          labels: bug;enhancement;documentation
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
