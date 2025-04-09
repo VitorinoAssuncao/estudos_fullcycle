@@ -15,9 +15,32 @@ jobs:
       - name: Assign PR Author
         uses: toshimaru/auto-author-assign@v2.1.1
 
-      - name: Label PR Based on Title
-        uses: TDAK1509/set-label-based-on-pr-title@v1
+      - name: Label PR Based on Title (enhancement)
+        uses: fregante/title-to-labels-action@v1
         with:
-          words: bug;feature;docs
-          labels: bug;enhancement;documentation
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          keywords: |
+            feat
+            feature
+            enhancement
+          labels: |
+            enhancement
+
+      - name: Label PR Based on Title (bug)
+        uses: fregante/title-to-labels-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          keywords: |
+            bug
+          labels: |
+            bug
+
+      - name: Label PR Based on Title (doc)
+        uses: fregante/title-to-labels-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          keywords: |
+            doc
+            documentation
+          labels: |
+            doc
