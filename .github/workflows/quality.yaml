@@ -75,5 +75,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           curl "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > coverage.svg
           git add coverage.svg
+          git add pkgs-coverage.svg
           git commit -m "update coverage badge" || true
           git push origin badges
