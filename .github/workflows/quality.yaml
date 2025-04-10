@@ -35,6 +35,7 @@ jobs:
           eval ${{ env.CONFIG_TOKEN }}
           MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u)
           echo "MODIFIED_DIRS=$MODIFIED_DIRS" >> $GITHUB_ENV
+          echo ${{ env.MODIFIED_DIRS }}
 
       - name: Run coverage for onboarding-worker
         if: contains(env.MODIFIED_DIRS, 'onboarding-worker')
