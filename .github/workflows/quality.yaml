@@ -77,7 +77,7 @@ jobs:
           badge-file-name: pkgs-coverage.svg
 #          breakdown-file-name: ${{ github.ref_name == 'master' && 'main.breakdown' || '' }}
           breakdown-file-name: 'main.breakdown'
-#          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && 'main.breakdown' || '' }}
+          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && 'main.breakdown' || '' }}
 
       - name: upload artifact (main.breakdown)
         uses: actions/upload-artifact@v4
@@ -87,17 +87,18 @@ jobs:
           path: main.breakdown
           if-no-files-found: error
 
-#      - name: post coverage report
-#        if: github.event.pull_request.merged == false
-#        uses: thollander/actions-comment-pull-request@v3
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          comment-tag: coverage-report
-#          pr-number: ${{ github.event.pull_request.number }}
-#          message: |
-#            go-test-coverage report:
-#            ```
-#            ${{ fromJSON(steps.coverage.outputs.report) }}```
+      - name: post coverage report
+        if: github.event.pull_request.merged == false
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: coverage-report
+          pr-number: ${{ github.event.pull_request.number }}
+          message: |
+            go-test-coverage report:
+            ```
+            ${{ fromJSON(steps.coverage.outputs.report) }}```
+          
 
       - name: Checkout badges Branch
         uses: actions/checkout@v4
