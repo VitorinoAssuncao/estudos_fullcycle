@@ -55,6 +55,7 @@ jobs:
           make coverage
           mv coverage.html pkgs-coverage.html 
           mv coverage.total pkgs-coverage.total
+          mv coverage.out pkgs-coverage.out
           cd ..
 
       - name: Upload coverage reports to branch
@@ -74,7 +75,8 @@ jobs:
       - name: Update coverage badge to branch
 #        if: github.event.pull_request.merged == true
         run: |
-          COVERAGE=$(go tool cover -func=pkgs/pkgs-coverage.out | grep total: | grep -Eo '[0-9]+\.[0-9]+')
+          cd pkgs
+          COVERAGE=$(go tool cover -func=pkgs-coverage.out | grep total: | grep -Eo '[0-9]+\.[0-9]+')
           COLOR=green
           if (( ${COVERAGE%\.*} < 80 )); then COLOR=cyan; fi
           if (( ${COVERAGE%\.*} < 70 )); then COLOR=yellow; fi
