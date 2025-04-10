@@ -76,7 +76,7 @@ jobs:
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: pkgs-coverage.svg
 #          breakdown-file-name: ${{ github.ref_name == 'master' && 'main.breakdown' || '' }}
-#          breakdown-file-name: ${{ 'main.breakdown' || '' }}
+          breakdown-file-name: 'main.breakdown'
 #          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && 'main.breakdown' || '' }}
 
       - name: upload artifact (main.breakdown)
