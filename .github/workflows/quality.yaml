@@ -81,7 +81,7 @@ jobs:
 
       - name: upload artifact (main.breakdown)
         uses: actions/upload-artifact@v4
-#        if: github.ref_name == 'master'
+        if: github.ref_name == 'master'
         with:
           name: main.breakdown
           path: main.breakdown
