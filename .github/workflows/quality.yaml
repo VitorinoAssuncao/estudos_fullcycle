@@ -116,14 +116,17 @@ jobs:
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: pkgs-coverage.svg
 
+      - name: Checkout badges Branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          clean: false
+
       - name: Update coverage badge
 #        if: github.event.pull_request.merged == true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git stash
-          git checkout badges
-          git stash pop
           git add pkgs-coverage.svg
           git commit -m "update coverage badge" || true
           git push origin badges
