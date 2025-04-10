@@ -28,7 +28,7 @@ jobs:
           git fetch origin master
           eval ${{ env.CONFIG_TOKEN }}
           MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
-          echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
+          echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_ENV
 
   run-quality:
     name: Run coverage and tests
@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: Print modified directories
         run: |
-          echo "Modified directories: ${{ needs.identify-directories.outputs.modified_dirs }}"
+          echo "Modified directories: ${{ env.modified_dirs }}"
 
       - name: Checkout badge branch
         uses: actions/checkout@v4
