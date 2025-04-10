@@ -36,7 +36,7 @@ jobs:
 
       - name: Test
         run: |
-          if [[ ",${{ needs.identify-directories.outputs.modified_dirs }}," == *",pkgs,"* ]]; then
+          if [[ ",${{ needs.identify-directories.outputs.modified_dirs }}," == *"pkgs"* ]]; then
             echo "O diretório 'pkgs' está presente em modified_dirs."
           else
             echo "O diretório 'pkgs' não está presente em modified_dirs."
