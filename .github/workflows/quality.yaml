@@ -30,13 +30,13 @@ jobs:
           MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
 
-      - name: Show modified directories
-        run: |
-          echo "Modified directories: ${{ steps.changes.outputs.modified_dirs }}"
-
       - name: Test
         run: |
-          echo "Existe pkgs na var: contains(${{ needs.identify-directories.outputs.modified_dirs }}, 'pkgs')}}"
+          if [[ ",${{ needs.identify-directories.outputs.modified_dirs }}," == *",pkgs,"* ]]; then
+            echo "O diretório 'pkgs' está presente em modified_dirs."
+          else
+            echo "O diretório 'pkgs' não está presente em modified_dirs."
+          fi
 
   run-quality:
     name: Run coverage and tests
