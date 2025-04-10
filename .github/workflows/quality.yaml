@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  THRESHOLD-FILE: 0
-  THRESHOLD-PACKAGE: 0
+  THRESHOLD-FILE: 1
+  THRESHOLD-PACKAGE: 1
   THRESHOLD-TOTAL: 10
 
 jobs:
