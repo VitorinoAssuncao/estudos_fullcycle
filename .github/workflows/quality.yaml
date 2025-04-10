@@ -26,68 +26,52 @@ jobs:
         uses: actions/setup-go@v5
         with:
           check-latest: true
-          go-version: '1.24.2'
+          go-version-file: go.mod
 
-      - name: Identify modified directories
-        id: changes
+      - name: Run make coverage
+        id: coverage
         run: |
-          git fetch origin master
           eval ${{ env.CONFIG_TOKEN }}
-          MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u | tr '\n' ',')
-          echo "MODIFIED_DIRS=${MODIFIED_DIRS%,}" >> $GITHUB_ENV
-          echo "Modified directories: $MODIFIED_DIRS"
-
-      - name: Run coverage for onboarding-worker
-        if: contains(env.MODIFIED_DIRS, 'onboarding-worker')
-        run: |
-          echo "Running coverage for onboarding-worker"
-          cd onboarding-worker
           make coverage
-          mv onboarding-worker/coverage.html onboarding-worker-coverage.html
-          mv onboarding-worker/coverage.total onboarding-worker-coverage.total
-          cd ..
+          echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
 
-      - name: Run coverage for pkgs
-        if: contains(env.MODIFIED_DIRS, 'pkgs')
-        run: |
-          echo "Running coverage for pkgs"
-          cd pkgs
-          make coverage
-          mv coverage.html pkgs-coverage.html 
-          mv coverage.total pkgs-coverage.total
-          mv coverage.out pkgs-coverage.out
-          cd ..
+      - name: Run go-test-coverage
+        uses: vladopajic/go-test-coverage@v2
+        with:
+          local-prefix: github.com/VitorinoAssuncao/estudos_fullcycle
+          profile: coverage.out
+          threshold-file: ${{ env.THRESHOLD-FILE }}
+          threshold-package: ${{ env.THRESHOLD-PACKAGE }}
+          threshold-total: ${{ env.THRESHOLD-TOTAL }}
 
-      - name: Upload coverage reports to branch
-#        if: github.event.pull_request.merged == true
-        run: |
-          git fetch origin
-          git checkout -b coverage-reports origin/coverage-reports || git checkout --orphan coverage-reports
-          mkdir -p coverage
-          mv onboarding-worker-coverage.html coverage/onboarding-worker-coverage.html || echo "Missing onboarding-worker-coverage.html"
-          mv pkgs/pkgs-coverage.html coverage/pkgs-coverage.html || echo "Missing onboarding-worker-coverage.html"
-          git add coverage/
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Update coverage reports" || true
-          git push origin coverage-reports
+      - name: Upload coverage report
+        if: github.event.pull_request.merged == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: pkgs-coverage.html
 
-      - name: Update coverage badge to branch
-#        if: github.event.pull_request.merged == true
+      - name: Checkout badge branch
+        if: github.event.pull_request.merged == true
+        uses: actions/checkout@v4
+        with:
+          ref: badges
+
+      - name: Update coverage badge
+        if: github.event.pull_request.merged == true
         run: |
-          cd pkgs
-          COVERAGE=$(go tool cover -func=pkgs-coverage.out | grep total: | grep -Eo '[0-9]+\.[0-9]+')
+          COVERAGE=${{ steps.coverage.outputs.total }}
           COLOR=green
           if (( ${COVERAGE%\.*} < 80 )); then COLOR=cyan; fi
           if (( ${COVERAGE%\.*} < 70 )); then COLOR=yellow; fi
           if (( ${COVERAGE%\.*} < 60 )); then COLOR=orange; fi
           if (( ${COVERAGE%\.*} < 50 )); then COLOR=red; fi
-          echo "COVERAGE for $project: $COVERAGE"
+          echo "COVERAGE: $COVERAGE"
           echo "COLOR: $COLOR"
 
-          curl "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > pkgs-coverage.svg
-          git add $pkgs-coverage.svg
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "update coverage badges" || true
+          curl "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > coverage.svg
+          git add coverage.svg
+          git commit -m "update coverage badge" || true
           git push origin badges
