@@ -28,7 +28,7 @@ jobs:
           git fetch origin master
           eval ${{ env.CONFIG_TOKEN }}
           MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
-          echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
+          echo "modified_dirs=$MODIFIED_DIRS" >> "$GITHUB_OUTPUT"
 
   run-quality:
     name: Run coverage and tests
