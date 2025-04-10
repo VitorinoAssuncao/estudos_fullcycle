@@ -32,7 +32,7 @@ jobs:
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
   run-coverage-actual:
-    name: Run coverage and tests
+    name: Run coverage and tests for actual Branch
     needs: identify-directories
     runs-on: ubuntu-latest
     if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
@@ -65,7 +65,7 @@ jobs:
 
 
       - name: Update coverage badge
-        if: github.event.pull_request.merged == true
+#        if: github.event.pull_request.merged == true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -77,7 +77,7 @@ jobs:
           git push origin badges
 
   run-coverage-main:
-    name: Run coverage and tests
+    name: Run coverage and tests for Master Branch
     needs: identify-directories
     runs-on: ubuntu-latest
     if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
@@ -85,7 +85,7 @@ jobs:
       - name: Checkout badge branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: master
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -111,7 +111,7 @@ jobs:
           badge-file-name: pkgs-coverage.svg
 
       - name: Update coverage badge
-        if: github.event.pull_request.merged == true
+#        if: github.event.pull_request.merged == true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
