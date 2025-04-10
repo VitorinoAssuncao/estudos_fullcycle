@@ -75,6 +75,7 @@ jobs:
 #        if: github.event.pull_request.merged == true
         run: |
           for project in onboarding-worker pkgs; do
+            cd $project
             if [[ -f ${project}-coverage.out ]]; then
               COVERAGE=$(go tool cover -func=${project}-coverage.out | grep total: | grep -Eo '[0-9]+\.[0-9]+')
               COLOR=green
@@ -88,6 +89,7 @@ jobs:
               curl "https://img.shields.io/badge/${project}_coverage-$COVERAGE%25-$COLOR" > ${project}-coverage.svg
               git add ${project}-coverage.svg
             fi
+            cd ..
           done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
