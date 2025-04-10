@@ -32,7 +32,7 @@ jobs:
         id: changes
         run: |
           eval ${{ env.CONFIG_TOKEN }}
-          MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u)
+          MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u)
           echo "MODIFIED_DIRS=$MODIFIED_DIRS" >> $GITHUB_ENV
 
       - name: Run coverage for onboarding-worker
