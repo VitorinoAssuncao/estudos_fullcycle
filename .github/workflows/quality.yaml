@@ -3,7 +3,7 @@ name: Quality
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, closed]
+    types: [opened, reopened, synchronize]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,12 +15,28 @@ env:
   THRESHOLD-TOTAL: 30
 
 jobs:
-  test:
-    name: Test Job
+  identify-directories:
+    name: Identifies affected directories
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Identify modified directories
+        id: changes
+        run: |
+          MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u)
+          echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
+
+  run-quality:
+    name: Run coverage and tests
+    needs: identify-directories
+    runs-on: ubuntu-latest
+    if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
+    steps:
       - name: Checkout badge branch
-        #        if: github.event.pull_request.merged == true
         uses: actions/checkout@v4
         with:
           ref: badges
@@ -34,7 +50,6 @@ jobs:
       - name: Run make coverage
         id: coverage
         run: |
-          eval ${{ env.CONFIG_TOKEN }}
           cd pkgs
           make coverage
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
@@ -50,19 +65,17 @@ jobs:
           badge-file-name: pkgs-coverage.svg
 
       - name: Upload coverage report
-#        if: github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: pkgs/coverage.html
 
-
       - name: Update coverage badge
-#        if: github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          curl "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > coverage.svg
           mv pkgs/coverage.html pkgs-coverage.html
           git add pkgs-coverage.svg
           git add pkgs-coverage.html
