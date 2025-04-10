@@ -30,6 +30,10 @@ jobs:
           MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
           echo "modified_dirs=$MODIFIED_DIRS" >> "$GITHUB_OUTPUT"
 
+      - name: Print modief directories
+        run: |
+          echo "Modified directories: ${{ steps.changes.outputs.modified_dirs }}"
+
   run-quality:
     name: Run coverage and tests
     needs: identify-directories
