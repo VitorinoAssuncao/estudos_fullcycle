@@ -78,6 +78,7 @@ jobs:
 #          breakdown-file-name: ${{ github.ref_name == 'master' && 'main.breakdown' || '' }}
           breakdown-file-name: 'main.breakdown'
           diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && 'main.breakdown' || '' }}
+        continue-on-error: true
 
       - name: upload artifact (main.breakdown)
         uses: actions/upload-artifact@v4
