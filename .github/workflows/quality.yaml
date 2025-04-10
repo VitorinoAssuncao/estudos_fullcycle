@@ -77,6 +77,7 @@ jobs:
           for project in onboarding-worker pkgs; do
             cd $project
             if [[ -f ${project}-coverage.out ]]; then
+              echo "Entrou no looping"
               COVERAGE=$(go tool cover -func=${project}-coverage.out | grep total: | grep -Eo '[0-9]+\.[0-9]+')
               COLOR=green
               if (( ${COVERAGE%\.*} < 80 )); then COLOR=cyan; fi
