@@ -89,7 +89,7 @@ jobs:
 
       - name: check report
         run:
-          echo "${{ steps.coverage.outputs.report }}"
+          echo "${{ steps.coverage.outputs.report.description }}"
 
       - name: post coverage report
         if: ${{ github.event.pull_request.merged != true }}
