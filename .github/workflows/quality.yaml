@@ -50,14 +50,14 @@ jobs:
           check-latest: true
           go-version: '1.24.2'
 
-#      - name: download artifact (main.breakdown)
-#        id: download-main-breakdown
-#        uses: dawidd6/action-download-artifact@v9
-#        with:
+      - name: download artifact (main.breakdown)
+        id: download-main-breakdown
+        uses: dawidd6/action-download-artifact@v9
+        with:
 #          branch: master
 #          workflow_conclusion: success
-#          name: main.breakdown
-#          if_no_artifact_found: fail
+          name: main.breakdown
+          if_no_artifact_found: fail
 
       - name: Run make coverage
         id: coverage
