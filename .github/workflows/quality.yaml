@@ -23,13 +23,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Identify modified directories
-        id: changes
-        run: |
-          eval ${{ env.CONFIG_TOKEN }}
-          MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u)
-          echo "MODIFIED_DIRS=$MODIFIED_DIRS" >> $GITHUB_ENV
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -37,6 +30,12 @@ jobs:
           go-version-file: ${{ env.GOVERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Identify modified directories
+        id: changes
+        run: |
+          eval ${{ env.CONFIG_TOKEN }}
+          MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u)
+          echo "MODIFIED_DIRS=$MODIFIED_DIRS" >> $GITHUB_ENV
 
       - name: Run coverage for onboarding-worker
         if: contains(env.MODIFIED_DIRS, 'onboarding-worker')
