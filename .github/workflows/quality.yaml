@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: pkgs-coverage.html
+          path: pkgs/coverage.html
 
       - name: Checkout badge branch
 #        if: github.event.pull_request.merged == true
