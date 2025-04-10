@@ -89,10 +89,6 @@ jobs:
           path: main.breakdown
           if-no-files-found: error
 
-      - name: check report
-        run:
-          echo "${{ steps.test-coverage.outputs.report }}"
-
       - name: post coverage report
         if: ${{ github.event.pull_request.merged != true }}
         uses: thollander/actions-comment-pull-request@v3
