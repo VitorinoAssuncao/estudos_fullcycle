@@ -66,6 +66,8 @@ jobs:
           mv onboarding-worker-coverage.html coverage/onboarding-worker-coverage.html || echo "Missing onboarding-worker-coverage.html"
           mv pkgs/pkgs-coverage.html coverage/pkgs-coverage.html || echo "Missing onboarding-worker-coverage.html"
           git add coverage/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update coverage reports" || true
           git push origin coverage-reports
 
