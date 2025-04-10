@@ -60,26 +60,11 @@ jobs:
       - name: Update coverage badge
 #        if: github.event.pull_request.merged == true
         run: |
-          COVERAGE=${{ steps.coverage.outputs.total }}
-          COLOR=green
-          if (( ${COVERAGE%\.*} < 80 )); then COLOR=cyan; fi
-          if (( ${COVERAGE%\.*} < 70 )); then COLOR=yellow; fi
-          if (( ${COVERAGE%\.*} < 60 )); then COLOR=orange; fi
-          if (( ${COVERAGE%\.*} < 50 )); then COLOR=red; fi
-          echo "COVERAGE: $COVERAGE"
-          echo "COLOR: $COLOR"
-
-          if [ -f "pkgs-coverage.svg" ]; then
-            echo "Arquivo pkgs-coverage.svg encontrado."
-          else
-            echo "Arquivo pkgs-coverage.svg não encontrado."
-            exit 1
-          fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           curl "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > coverage.svg
-          git add coverage.svg
+          mv pkgs/coverage.html pkgs-coverage.html
           git add pkgs-coverage.svg
+          git add pkgs-coverage.html
           git commit -m "update coverage badge" || true
           git push origin badges
