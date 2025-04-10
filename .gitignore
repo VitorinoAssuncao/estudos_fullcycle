@@ -1,2 +1,6 @@
 ddd-pattern/node_modules
 .idea/*
+/pkgs/coverage.html
+/pkgs/coverage.out
+/pkgs/coverage.temp
+/pkgs/coverage.total
