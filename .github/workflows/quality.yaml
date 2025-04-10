@@ -31,9 +31,8 @@ jobs:
       - name: Identify modified directories
         id: changes
         run: |
-          git fetch origin master
           eval ${{ env.CONFIG_TOKEN }}
-          MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u)
+          MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u | tr '\n' ',')
           echo "MODIFIED_DIRS=${MODIFIED_DIRS%,}" >> $GITHUB_ENV
           echo "Modified directories: $MODIFIED_DIRS"
 
