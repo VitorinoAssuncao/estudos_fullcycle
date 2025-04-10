@@ -53,7 +53,7 @@ jobs:
           echo "Running coverage for pkgs"
           cd pkgs
           make coverage
-          mv coverage.html pkgs-coverage.html
+          mv coverage.html pkgs-coverage.html 
           mv coverage.total pkgs-coverage.total
           cd ..
 
@@ -63,8 +63,8 @@ jobs:
           git fetch origin
           git checkout -b coverage-reports origin/coverage-reports || git checkout --orphan coverage-reports
           mkdir -p coverage
-          mv onboarding-worker-coverage.html coverage/onboarding-worker-coverage.html
-          mv pkgs-coverage.html coverage/pkgs-coverage.html
+          mv onboarding-worker-coverage.html coverage/onboarding-worker-coverage.html || echo "Missing onboarding-worker-coverage.html"
+          mv pkgs-coverage.html coverage/pkgs-coverage.html || echo "Missing onboarding-worker-coverage.html"
           git add coverage/
           git commit -m "Update coverage reports" || true
           git push origin coverage-reports
