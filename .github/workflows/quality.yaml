@@ -63,18 +63,14 @@ jobs:
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: pkgs-${{ github.event.pull_request.number }}-coverage.svg
 
-      - name: Stash files
-        run: |
-          git stash
-
       - name: Checkout badges branch
         uses: actions/checkout@v4
         with:
           ref: badges
+          clean: false
 
       - name: Validate files
         run: |
-          git stash pop
           ls -l
 
       - name: Update coverage badge
