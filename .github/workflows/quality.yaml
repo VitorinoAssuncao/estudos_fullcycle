@@ -40,7 +40,7 @@ jobs:
       - name: Run go-test-coverage
         uses: vladopajic/go-test-coverage@v2
         with:
-          local-prefix: github.com/VitorinoAssuncao/estudos_fullcycle
+          local-prefix: github.com/VitorinoAssuncao/estudos_fullcycle/pkgs
           profile: coverage.out
           threshold-file: ${{ env.THRESHOLD-FILE }}
           threshold-package: ${{ env.THRESHOLD-PACKAGE }}
