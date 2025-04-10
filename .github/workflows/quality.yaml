@@ -64,7 +64,7 @@ jobs:
           git checkout -b coverage-reports origin/coverage-reports || git checkout --orphan coverage-reports
           mkdir -p coverage
           mv onboarding-worker-coverage.html coverage/onboarding-worker-coverage.html || echo "Missing onboarding-worker-coverage.html"
-          mv pkgs-coverage.html coverage/pkgs-coverage.html || echo "Missing onboarding-worker-coverage.html"
+          mv pkgs/pkgs-coverage.html coverage/pkgs-coverage.html || echo "Missing onboarding-worker-coverage.html"
           git add coverage/
           git commit -m "Update coverage reports" || true
           git push origin coverage-reports
