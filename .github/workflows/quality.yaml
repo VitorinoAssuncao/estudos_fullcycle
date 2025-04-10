@@ -58,7 +58,7 @@ jobs:
           cd ..
 
       - name: Upload coverage reports to branch
-        if: github.event.pull_request.merged == true
+#        if: github.event.pull_request.merged == true
         run: |
           git fetch origin
           git checkout -b coverage-reports origin/coverage-reports || git checkout --orphan coverage-reports
@@ -70,7 +70,7 @@ jobs:
           git push origin coverage-reports
 
       - name: Update coverage badge to branch
-        if: github.event.pull_request.merged == true
+#        if: github.event.pull_request.merged == true
         run: |
           for project in onboarding-worker pkgs; do
             if [[ -f ${project}-coverage.out ]]; then
