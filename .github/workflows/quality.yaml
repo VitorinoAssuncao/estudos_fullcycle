@@ -31,6 +31,50 @@ jobs:
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
+  run-coverage-actual:
+    name: Run coverage and tests
+    needs: identify-directories
+    runs-on: ubuntu-latest
+    if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
+    steps:
+      - name: Checkout badge branch
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          check-latest: true
+          go-version: '1.24.2'
+
+      - name: Run make coverage
+        id: coverage
+        run: |
+          cd pkgs
+          make coverage
+          echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
+          cd ..
+
+      - name: Run go-test-coverage
+        uses: vladopajic/go-test-coverage@v2
+        with:
+          profile: pkgs/coverage.out
+          threshold-file: ${{ env.THRESHOLD-FILE }}
+          threshold-package: ${{ env.THRESHOLD-PACKAGE }}
+          threshold-total: ${{ env.THRESHOLD-TOTAL }}
+          badge-file-name: pkgs-${{ github.event.pull_request.number }}-coverage.svg
+
+
+      - name: Update coverage badge
+        if: github.event.pull_request.merged == true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git stash
+          git checkout badges
+          git stash pop
+          git add pkgs-${{ github.event.pull_request.number }}-coverage.svg
+          git commit -m "update coverage badge" || true
+          git push origin badges
 
   run-coverage-main:
     name: Run coverage and tests
@@ -66,26 +110,14 @@ jobs:
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: pkgs-coverage.svg
 
-      - name: Upload coverage report
-        if: github.event.pull_request.merged == true
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: pkgs/coverage.html
-
       - name: Update coverage badge
         if: github.event.pull_request.merged == true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          mv pkgs/coverage.html pkgs-coverage.html
           git stash
           git checkout badges
           git stash pop
           git add pkgs-coverage.svg
-          git add pkgs-coverage.html
           git commit -m "update coverage badge" || true
           git push origin badges
-
-    outputs:
-      coverage_total: ${{ steps.coverage.outputs.total }}
