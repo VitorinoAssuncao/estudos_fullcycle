@@ -32,6 +32,9 @@ jobs:
           # Converte quebras de linha em literais "\n"
           EXTRACTED_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | awk '{printf "%s\\n", $0}')
           
+          # Escapa aspas duplas
+          EXTRACTED_DESCRIPTION=$(echo "$EXTRACTED_DESCRIPTION" | sed 's/"/\\"/g')
+          
           echo "EXTRACTED_DESCRIPTION=$EXTRACTED_DESCRIPTION" >> $GITHUB_ENV
 
       - name: Render template
