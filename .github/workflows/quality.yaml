@@ -13,6 +13,7 @@ env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 70
+  GOVERSION: 1.24.2
 
 jobs:
   test:
@@ -26,7 +27,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           check-latest: true
-          go-version-file: go.mod
+          go-version-file: ${{ env.GOVERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Identify modified directories
