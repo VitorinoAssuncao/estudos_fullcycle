@@ -32,8 +32,10 @@ jobs:
         id: coverage
         run: |
           eval ${{ env.CONFIG_TOKEN }}
+          cd pkgs
           make coverage
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
+          cd ..
 
       - name: Run go-test-coverage
         uses: vladopajic/go-test-coverage@v2
