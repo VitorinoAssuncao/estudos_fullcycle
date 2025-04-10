@@ -16,7 +16,7 @@ concurrency:
 env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
-  THRESHOLD-TOTAL: 30
+  THRESHOLD-TOTAL: 10
 
 jobs:
   identify-directories:
@@ -89,7 +89,7 @@ jobs:
 
       - name: check report
         run:
-          echo "${{ steps.coverage.outputs.report.description }}"
+          echo "${{ steps.coverage.outputs.report }}"
 
       - name: post coverage report
         if: ${{ github.event.pull_request.merged != true }}
