@@ -19,8 +19,11 @@ jobs:
     name: Test Job
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout badge branch
+        #        if: github.event.pull_request.merged == true
         uses: actions/checkout@v4
+        with:
+          ref: badges
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -53,11 +56,6 @@ jobs:
           name: coverage-report
           path: pkgs/coverage.html
 
-      - name: Checkout badge branch
-#        if: github.event.pull_request.merged == true
-        uses: actions/checkout@v4
-        with:
-          ref: badges
 
       - name: Update coverage badge
 #        if: github.event.pull_request.merged == true
