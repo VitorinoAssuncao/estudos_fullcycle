@@ -53,8 +53,8 @@ jobs:
           echo "Running coverage for pkgs"
           cd pkgs
           make coverage
-          mv pkgs/coverage.html pkgs-coverage.html
-          mv pkgs/coverage.total pkgs-coverage.total
+          mv coverage.html pkgs-coverage.html
+          mv coverage.total pkgs-coverage.total
           cd ..
 
       - name: Upload coverage reports to branch
