@@ -12,7 +12,7 @@ concurrency:
 env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
-  THRESHOLD-TOTAL: 70
+  THRESHOLD-TOTAL: 30
 
 jobs:
   test:
