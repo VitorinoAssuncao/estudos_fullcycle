@@ -17,7 +17,7 @@ env:
 jobs:
   test:
     name: Test Job
-    runs-on: [self-hosted, runner-shared-build]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
