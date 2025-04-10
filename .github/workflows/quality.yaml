@@ -46,18 +46,6 @@ jobs:
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: pkgs-coverage.svg
 
-      - name: Verificar arquivos gerados
-        run: ls -l
-
-      - name: Verificar existência do arquivo
-        run: |
-          if [ -f "pkgs-coverage.svg" ]; then
-            echo "Arquivo pkgs-coverage.svg encontrado."
-          else
-            echo "Arquivo pkgs-coverage.svg não encontrado."
-            exit 1
-          fi
-
       - name: Upload coverage report
 #        if: github.event.pull_request.merged == true
         uses: actions/upload-artifact@v4
@@ -82,6 +70,13 @@ jobs:
           if (( ${COVERAGE%\.*} < 50 )); then COLOR=red; fi
           echo "COVERAGE: $COVERAGE"
           echo "COLOR: $COLOR"
+
+          if [ -f "pkgs-coverage.svg" ]; then
+            echo "Arquivo pkgs-coverage.svg encontrado."
+          else
+            echo "Arquivo pkgs-coverage.svg não encontrado."
+            exit 1
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
