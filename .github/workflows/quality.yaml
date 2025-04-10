@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
     steps:
-      - name: Checkout badge branch
+      - name: Checkout actual branch
         uses: actions/checkout@v4
 
       - name: Set up Go
@@ -63,14 +63,20 @@ jobs:
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: pkgs-${{ github.event.pull_request.number }}-coverage.svg
 
+      - name: Stash files
+        run: |
+          git stash
+
+      - name: Checkout badges branch
+        uses: actions/checkout@v4
+        with:
+          ref: badges
 
       - name: Update coverage badge
 #        if: github.event.pull_request.merged == true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git stash
-          git checkout badges
           git stash pop
           git add pkgs-${{ github.event.pull_request.number }}-coverage.svg
           git commit -m "update coverage badge" || true
