@@ -72,6 +72,10 @@ jobs:
         with:
           ref: badges
 
+      - name: Validate files
+        run: |
+          ls -l
+
       - name: Update coverage badge
 #        if: github.event.pull_request.merged == true
         run: |
