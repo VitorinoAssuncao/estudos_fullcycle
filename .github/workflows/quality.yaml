@@ -5,6 +5,10 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -31,73 +35,29 @@ jobs:
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
-  run-coverage-actual:
-    name: Run coverage and tests for actual Branch
-    needs: identify-directories
-    runs-on: ubuntu-latest
-    if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
-    steps:
-      - name: Checkout actual branch
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          check-latest: true
-          go-version: '1.24.2'
-
-      - name: Run make coverage
-        id: coverage
-        run: |
-          cd pkgs
-          make coverage
-          echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
-          cd ..
-
-      - name: Run go-test-coverage
-        uses: vladopajic/go-test-coverage@v2
-        with:
-          profile: pkgs/coverage.out
-          threshold-file: ${{ env.THRESHOLD-FILE }}
-          threshold-package: ${{ env.THRESHOLD-PACKAGE }}
-          threshold-total: ${{ env.THRESHOLD-TOTAL }}
-          badge-file-name: pkgs-${{ github.event.pull_request.number }}-coverage.svg
-
-      - name: Checkout badges branch
-        uses: actions/checkout@v4
-        with:
-          ref: badges
-          clean: false
-
-      - name: Validate files
-        run: |
-          ls -l
-
-      - name: Update coverage badge
-#        if: github.event.pull_request.merged == true
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pkgs-${{ github.event.pull_request.number }}-coverage.svg
-          git commit -m "update coverage badge" || true
-          git push origin badges
-
-  run-coverage-main:
+  run-coverage:
     name: Run coverage and tests for Master Branch
     needs: identify-directories
     runs-on: ubuntu-latest
     if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
     steps:
-      - name: Checkout badge branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: master
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           check-latest: true
           go-version: '1.24.2'
+
+      - name: download artifact (main.breakdown)
+        id: download-main-breakdown
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          branch: master
+          workflow_conclusion: success
+          name: main.breakdown
+          if_no_artifact_found: fail
 
       - name: Run make coverage
         id: coverage
@@ -115,11 +75,34 @@ jobs:
           threshold-package: ${{ env.THRESHOLD-PACKAGE }}
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: pkgs-coverage.svg
+#          breakdown-file-name: ${{ github.ref_name == 'master' && 'main.breakdown' || '' }}
+          breakdown-file-name: ${{ 'main.breakdown' || '' }}
+          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && 'main.breakdown' || '' }}
+
+      - name: upload artifact (main.breakdown)
+        uses: actions/upload-artifact@v4
+#        if: github.ref_name == 'master'
+        with:
+          name: main.breakdown
+          path: main.breakdown
+          if-no-files-found: error
+
+      - name: post coverage report
+        if: github.event.pull_request.merged == false
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: coverage-report
+          pr-number: ${{ github.event.pull_request.number }}
+          message: |
+            go-test-coverage report:
+            ``` 
+            ${{ fromJSON(steps.coverage.outputs.report) }}```
 
       - name: Checkout badges Branch
         uses: actions/checkout@v4
         with:
-          ref: master
+          ref: badges
           clean: false
 
       - name: Update coverage badge
