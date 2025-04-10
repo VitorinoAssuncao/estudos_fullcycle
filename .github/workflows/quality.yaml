@@ -21,13 +21,11 @@ jobs:
     steps:
       - name: Checkout base branch
         uses: actions/checkout@v4
-        with:
-          ref: master
-          fetch-depth: 0
 
       - name: Identify modified directories
         id: changes
         run: |
+          git fetch --all
           MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u)
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
 
