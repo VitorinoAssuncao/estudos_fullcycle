@@ -74,7 +74,7 @@ jobs:
       - name: Update coverage badge to branch
 #        if: github.event.pull_request.merged == true
         run: |
-          for project in onboarding-worker pkgs; do
+          for project in pkgs; do
             cd $project
             if [[ -f ${project}-coverage.out ]]; then
               echo "Entrou no looping"
