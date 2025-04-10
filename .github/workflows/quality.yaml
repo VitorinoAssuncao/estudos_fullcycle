@@ -36,12 +36,8 @@ jobs:
     name: Run coverage and tests
     needs: identify-directories
     runs-on: ubuntu-latest
-#    if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
+    if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
     steps:
-      - name: Print modified directories
-        run: |
-          echo "Modified directories: ${{ needs.identify-directories.outputs.modified_dirs }}"
-
       - name: Checkout badge branch
         uses: actions/checkout@v4
         with:
