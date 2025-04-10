@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           check-latest: true
-          go-version-file: go.mod
+          go-version: '1.24.2'
 
       - name: Run make coverage
         id: coverage
