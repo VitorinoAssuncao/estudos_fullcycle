@@ -32,7 +32,7 @@ jobs:
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
 
-  run-quality:
+  run-coverage:
     name: Run coverage and tests
     needs: identify-directories
     runs-on: ubuntu-latest
@@ -83,3 +83,6 @@ jobs:
           git add pkgs-coverage.html
           git commit -m "update coverage badge" || true
           git push origin badges
+
+    outputs:
+      coverage_total: ${{ steps.coverage.outputs.total }}
