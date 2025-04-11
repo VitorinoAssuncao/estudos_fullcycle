@@ -73,10 +73,10 @@ jobs:
         uses: dawidd6/action-download-artifact@v9
         with:
           github_token: '${{ secrets.GITHUB_TOKEN }}'
-          branch: main
           name: main-${{ matrix.feature }}.breakdown
           workflow: quality.yaml
           workflow_search: true
+          search_artifacts: true
           if_no_artifact_found: fail
         continue-on-error: true
 
