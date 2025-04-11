@@ -73,7 +73,6 @@ jobs:
         uses: dawidd6/action-download-artifact@v9
         with:
           branch: main
-          workflow_conclusion: success
           name: main-${{ matrix.feature }}.breakdown
           if_no_artifact_found: fail
         continue-on-error: true
@@ -123,11 +122,11 @@ jobs:
             ```
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
 
-      - name: Checkout badges Branch
+      - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         uses: actions/checkout@v4
         with:
-          ref: badges
+          ref: badge
           clean: false
 
       - name: Update coverage badge
@@ -137,4 +136,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ matrix.feature }}-coverage.svg
           git commit -m "update coverage badge" || true
-          git push origin badges
+          git push origin badge
