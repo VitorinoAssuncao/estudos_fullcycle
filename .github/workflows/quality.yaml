@@ -141,7 +141,7 @@ jobs:
           ref: badge
 
       - name: download badge
-        if: steps.skip.outputs.should_skip != 'true'
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         id: download-badge
         uses: dawidd6/action-download-artifact@v9
         with:
