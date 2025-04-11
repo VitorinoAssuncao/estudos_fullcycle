@@ -74,6 +74,8 @@ jobs:
         with:
           branch: main
           name: main-${{ matrix.feature }}.breakdown
+          workflow: quality.yaml
+          workflow_search: true
           if_no_artifact_found: fail
         continue-on-error: true
 
@@ -131,6 +133,11 @@ jobs:
           path: ${{ matrix.feature }}-coverage.svg
           if-no-files-found: error
 
+      - name: Check upload badge
+        id: check-upload-badge
+        run: |
+            echo ${{ steps.upload-badge.outputs.artifact-id }}
+
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
         uses: actions/checkout@v4
@@ -142,10 +149,10 @@ jobs:
         id: download-badge
         uses: dawidd6/action-download-artifact@v9
         with:
-          pr: ${{ github.event.pull_request.number }}
-          name: ${{ matrix.feature }}-coverage
+          branch: ${{ github.ref_name }}
+          name: ${{ matrix.feature }}-coverage.svg
+          search_artifacts: true
           if_no_artifact_found: fail
-        continue-on-error: true
 
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
