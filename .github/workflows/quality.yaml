@@ -17,6 +17,7 @@ env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 10
+  ACCEPTED_PACKAGES: 'pkgs,onboarding-worker'
 
 jobs:
   identify-directories:
@@ -35,13 +36,14 @@ jobs:
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
+
   run-coverage:
     name: Run coverage and tests for ${{ matrix.feature }}
     needs: identify-directories
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        feature: ['pkgs','onboarding-worker']
+        feature: ${{ fromJSON(env.ACCEPTED_PACKAGES) }}
     continue-on-error: true
     steps:
       - name: Should Skip
@@ -126,7 +128,7 @@ jobs:
           clean: false
 
       - name: Update coverage badge
-        if: github.event.pull_request.merged == true
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
