@@ -100,7 +100,7 @@ jobs:
         id: download-badge
         uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.feature }}-deploy-coverage.svg
+          name: ${{ matrix.feature }}-deploy-coverage
 
       - name: Update coverage badge
         run: |
