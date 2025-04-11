@@ -62,7 +62,6 @@ jobs:
         id: coverage
         run: |
           cd ${{ matrix.feature }}
-          ls -l
           make coverage
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
           cd ..
