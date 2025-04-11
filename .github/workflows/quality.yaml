@@ -124,7 +124,6 @@ jobs:
 
       - name: Show files
         run: |
-#          cat ${{ matrix.feature }}-coverage.svg
           git add ${{ matrix.feature }}-coverage.svg
           git stash
 
@@ -138,8 +137,6 @@ jobs:
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
         run: |
-          git stash pop
-          ls -l
           cat ${{ matrix.feature }}-coverage.svg
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
