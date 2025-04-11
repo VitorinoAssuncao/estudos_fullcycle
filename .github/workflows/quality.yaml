@@ -124,8 +124,8 @@ jobs:
 
       - name: Show files
         run: |
-          ls -l
           cat ${{ matrix.feature }}-coverage.svg
+          git add ${{ matrix.feature }}-coverage.svg
           git stash
 
       - name: Checkout badge Branch
