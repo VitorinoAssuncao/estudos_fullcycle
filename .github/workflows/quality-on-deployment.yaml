@@ -30,7 +30,6 @@ jobs:
         major: ${{ steps.check-tag.outputs.major }}
         prerelease: ${{ steps.check-tag.outputs.prerelease }}
         build: ${{ steps.check-tag.outputs.build }}
-
   run-coverage:
     name: Run Coverage and update badges on Deployment
     runs-on: ubuntu-latest
@@ -103,6 +102,31 @@ jobs:
         with:
           name: ${{ matrix.feature }}-deploy-coverage
 
+      - name: Update coverage badge
+        run: |
+          cat ${{ matrix.feature }}-deploy-coverage.svg
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ${{ matrix.feature }}-deploy-coverage.svg
+          git add version-badge.svg
+          git commit -m "update coverage on deploy badge" || true
+          git push origin badge
+
+  update-version:
+    name: Update version Badge
+    runs-on: ubuntu-latest
+    needs: run-coverage
+    if: |
+      github.event.release.prerelease == false &&
+      needs.check-tag.outputs.major != '' &&
+      needs.check-tag.outputs.prerelease == '' &&
+      needs.check-tag.outputs.build == ''
+    steps:
+      - name: Checkout badge Branch
+        uses: actions/checkout@v4
+        with:
+          ref: badge
+
       - name: create version badge
         id: version-badge
         uses: emibcn/badge-action@v2.0.2
@@ -116,7 +140,6 @@ jobs:
           cat ${{ matrix.feature }}-deploy-coverage.svg
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ${{ matrix.feature }}-deploy-coverage.svg
           git add version-badge.svg
           git commit -m "update coverage on deploy badge" || true
           git push origin badge
