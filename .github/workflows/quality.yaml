@@ -130,7 +130,6 @@ jobs:
           name: ${{ matrix.feature }}-coverage
           path: ${{ matrix.feature }}-coverage.svg
           if-no-files-found: error
-        continue-on-error: true
 
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
@@ -146,6 +145,7 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           name: ${{ matrix.feature }}-coverage
           if_no_artifact_found: fail
+        continue-on-error: true
 
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
