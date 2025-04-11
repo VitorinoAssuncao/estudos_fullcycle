@@ -124,7 +124,7 @@ jobs:
 
       - name: Upload Badge
         uses: actions/upload-artifact@v4
-        if: steps.skip.outputs.should_skip != 'true' && github.ref_name == 'main'
+        if: steps.skip.outputs.should_skip != 'true' #&& github.ref_name == 'main'
         with:
           name: ${{ matrix.feature }}-coverage.svg
           path: ${{ matrix.feature }}-coverage.svg
