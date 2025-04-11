@@ -122,16 +122,28 @@ jobs:
             ```
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
 
-      - name: Show files
-        run: |
-          git add ${{ matrix.feature }}-coverage.svg
-          git stash
+      - name: Upload Badge
+        uses: actions/upload-artifact@v4
+        if: steps.skip.outputs.should_skip != 'true' && github.ref_name == 'main'
+        with:
+          name: ${{ matrix.feature }}-coverage.svg
+          path: ${{ matrix.feature }}-coverage.svg
+          if-no-files-found: error
 
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
-        run: |
-          git checkout badge || git checkout -b badge
-          git stash pop
+        uses: actions/checkout@v4
+        with:
+          ref: badge
+
+      - name: download badge
+        if: steps.skip.outputs.should_skip != 'true'
+        id: download-badge
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          name: ${{ matrix.feature }}-coverage.svg
+          if_no_artifact_found: fail
+        continue-on-error: true
 
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
