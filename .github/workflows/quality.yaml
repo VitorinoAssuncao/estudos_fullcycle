@@ -123,10 +123,11 @@ jobs:
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
 
       - name: Upload Badge
+        id: upload-badge
         uses: actions/upload-artifact@v4
         if: steps.skip.outputs.should_skip != 'true' #&& github.ref_name == 'main'
         with:
-          name: ${{ matrix.feature }}-coverage.svg
+          name: ${{ matrix.feature }}-coverage
           path: ${{ matrix.feature }}-coverage.svg
           if-no-files-found: error
 
@@ -141,9 +142,9 @@ jobs:
         id: download-badge
         uses: dawidd6/action-download-artifact@v9
         with:
-          name: ${{ matrix.feature }}-coverage.svg
+          branch: ${{ github.ref_name }}
+          name: ${{ matrix.feature }}-coverage
           if_no_artifact_found: fail
-        continue-on-error: true
 
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
