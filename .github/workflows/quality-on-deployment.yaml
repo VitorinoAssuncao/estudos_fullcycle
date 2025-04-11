@@ -36,7 +36,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-tag
     if: |
-      github.event.release.prerelease == false
+      github.event.release.prerelease == false &&
+      needs.check-tag.outputs.major != '' &&
+      needs.check-tag.outputs.prerelease == '' &&
+      needs.check-tag.outputs.build == ''
     strategy:
       matrix:
         feature: ['pkgs']
