@@ -26,6 +26,7 @@ jobs:
         uses: matt-usurp/validate-semver@v2
         with:
             version: ${{ github.event.release.tag_name }}
+
       - name: Show tag values
         run: |
           echo "major=${{ steps.check-tag.outputs.major }}" >> $GITHUB_OUTPUT
