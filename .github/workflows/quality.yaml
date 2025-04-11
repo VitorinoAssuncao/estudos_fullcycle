@@ -38,8 +38,16 @@ jobs:
     strategy:
       matrix:
         feature: ['pkgs', 'onboarding-worker']
-    if: contains(needs.identify-directories.outputs.modified_dirs, matrix.feature)
     steps:
+      - name: Skip Feature
+        id: skip-check
+        uses: actions/github-script@v6
+        if: ${{ !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature) }}
+        with:
+          script: |
+            console.log("Skipping steps as the feature '${{ matrix.feature }}' is not in the modified directories.");            
+            core.setOutput('skip', 'true');
+
       - name: Checkout
         uses: actions/checkout@v4
 
