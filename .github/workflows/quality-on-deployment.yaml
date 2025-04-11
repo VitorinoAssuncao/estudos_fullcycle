@@ -105,7 +105,7 @@ jobs:
 
       - name: create version badge
         id: version-badge
-        user: emibcn/badge-action@v2.0.2
+        uses: emibcn/badge-action@v2.0.2
         with:
           label: "Version"
           status: "${{ github.event.release.tag_name }}"
