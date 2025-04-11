@@ -44,7 +44,7 @@ jobs:
         id: skip
         if: ${{ !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature) }}
         run: |
-          echo "Skipping jobs ${ matrix.feature } has not modified"
+          echo "Skipping jobs ${{ matrix.feature }} has not modified"
           echo "should_skip=true" >> $GITHUB_OUTPUT
 
       - name: Checkout
@@ -79,8 +79,8 @@ jobs:
           cd ..
 
       - name: Run go-test-coverage
-        id: test-coverage
         if: steps.skip.outputs.should_skip != 'true'
+        id: test-coverage
         uses: vladopajic/go-test-coverage@v2
         env:
           BREAKDOWN_FILE_NAME: main-${{ matrix.feature }}.breakdown
