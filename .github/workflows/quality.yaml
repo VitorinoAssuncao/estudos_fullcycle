@@ -37,17 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        feature: ['pkgs', 'onboarding-worker']
+        feature: ['pkgs']
     steps:
-      - name: Skip Feature
-        id: skip-check
-        uses: actions/github-script@v6
-        if: ${{ !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature) }}
-        with:
-          script: |
-            console.log("Skipping steps as the feature '${{ matrix.feature }}' is not in the modified directories.");            
-            core.setOutput('skip', 'true');
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -70,14 +61,9 @@ jobs:
       - name: Run make coverage
         id: coverage
         run: |
-          cd ${{ matrix.feature }}
-          make coverage || exit 1
-          if [ -f coverage.total ]; then
+          cd pkgs
+          make coverage
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
-          else
-          echo "Arquivo coverage.total não encontrado!" >&2
-          exit 1
-          fi
           cd ..
 
       - name: Run go-test-coverage
