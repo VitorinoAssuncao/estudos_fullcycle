@@ -34,7 +34,7 @@ jobs:
           eval ${{ env.CONFIG_TOKEN }}
           MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
-          echo "accepted_packages=${{ env.ACCEPTED_PACKAGES }}" >> $GITHUB_OUTPUT
+          echo "accepted_packages="${{ env.ACCEPTED_PACKAGES }}"" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
       accepted_packages: ${{ steps.changes.outputs.accepted_packages }}
