@@ -124,7 +124,7 @@ jobs:
 
       - name: Show files
         run: |
-          cat ${{ matrix.feature }}-coverage.svg
+#          cat ${{ matrix.feature }}-coverage.svg
           git add ${{ matrix.feature }}-coverage.svg
           git stash
 
