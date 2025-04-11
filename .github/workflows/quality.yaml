@@ -130,6 +130,7 @@ jobs:
           name: ${{ matrix.feature }}-coverage
           path: ${{ matrix.feature }}-coverage.svg
           if-no-files-found: error
+        continue-on-error: true
 
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
