@@ -123,7 +123,9 @@ jobs:
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
 
       - name: Show files
-        run: ls -l
+        run: |
+          ls -l
+          cat ${{ matrix.feature }}-coverage.svg
 
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
