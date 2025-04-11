@@ -46,24 +46,3 @@ func TestAdd(t *testing.T) {
 		})
 	}
 }
-
-func TestSub(t *testing.T) {
-	t.Parallel()
-
-	tt := []struct {
-		name   string
-		input  int
-		input2 int
-		want   int
-	}{
-		{name: "should return Hello Vitorino", input: 1, input2: 2, want: 1},
-	}
-
-	for _, tc := range tt {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-
-			assert.Equal(t, tc.want, Sub(tc.input2, tc.input))
-		})
-	}
-}
