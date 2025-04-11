@@ -61,7 +61,8 @@ jobs:
       - name: Run make coverage
         id: coverage
         run: |
-          cd pkgs
+          cd ${{ matrix.feature }}
+          ls -l
           make coverage
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
           cd ..
@@ -72,12 +73,13 @@ jobs:
         env:
           BREAKDOWN_FILE_NAME: main-${{ matrix.feature }}.breakdown
         with:
-          profile: pkgs/coverage.out
+          profile: ${{ matrix.feature }}/coverage.out
           threshold-file: ${{ env.THRESHOLD-FILE }}
           threshold-package: ${{ env.THRESHOLD-PACKAGE }}
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
           badge-file-name: ${{ matrix.feature }}-coverage.svg
-          breakdown-file-name: ${{ github.ref_name == 'main' && env.BREAKDOWN_FILE_NAME || '' }}
+          #breakdown-file-name: ${{ github.ref_name == 'main' && env.BREAKDOWN_FILE_NAME || '' }}
+          breakdown-file-name: ${{ env.BREAKDOWN_FILE_NAME }}
           diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && env.BREAKDOWN_FILE_NAME || '' }}
         continue-on-error: true
 
