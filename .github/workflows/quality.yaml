@@ -38,7 +38,7 @@ jobs:
     strategy:
       matrix:
         feature: ['pkgs', 'onboarding-worker']
-    if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
+    if: contains(needs.identify-directories.outputs.modified_dirs, matrix.feature)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,8 +63,13 @@ jobs:
         id: coverage
         run: |
           cd ${{ matrix.feature }}
-          make coverage
+          make coverage || exit 1
+          if [ -f coverage.total ]; then
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
+          else
+          echo "Arquivo coverage.total não encontrado!" >&2
+          exit 1
+          fi
           cd ..
 
       - name: Run go-test-coverage
