@@ -126,6 +126,7 @@ jobs:
         run: |
           ls -l
           cat ${{ matrix.feature }}-coverage.svg
+          git stash
 
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
@@ -137,6 +138,7 @@ jobs:
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
         run: |
+          git stash pop
           ls -l
           cat ${{ matrix.feature }}-coverage.svg
           git config user.name "github-actions[bot]"
