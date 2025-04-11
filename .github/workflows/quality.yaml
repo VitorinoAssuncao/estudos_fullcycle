@@ -107,7 +107,7 @@ jobs:
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
-        if: steps.skip.outputs.should_skip != 'true' &&  github.event.pull_request.merged != true
+        if: steps.skip.outputs.should_skip != 'true' &&  github.event.pull_request.merged == true
         with:
           name: main-${{ matrix.feature }}.breakdown
           path: main-${{ matrix.feature }}.breakdown
