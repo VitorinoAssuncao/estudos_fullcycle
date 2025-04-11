@@ -125,6 +125,11 @@ jobs:
             ```
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
 
+      - name: Check Badge Value
+        if: steps.skip.outputs.should_skip != 'true'
+        run: |
+          cat ${{ matrix.feature }}-coverage.svg
+
       - name: Upload Badge
         id: upload-badge
         uses: actions/upload-artifact@v4
@@ -150,6 +155,7 @@ jobs:
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         run: |
+          cat ${{ matrix.feature }}-coverage.svg
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ matrix.feature }}-coverage.svg
