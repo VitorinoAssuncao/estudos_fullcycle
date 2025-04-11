@@ -107,7 +107,7 @@ jobs:
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
-        if: steps.skip.outputs.should_skip != 'true' && github.ref_name == 'main'
+        if: steps.skip.outputs.should_skip != 'true' &&  github.event.pull_request.merged != true
         with:
           name: main-${{ matrix.feature }}.breakdown
           path: main-${{ matrix.feature }}.breakdown
@@ -128,14 +128,14 @@ jobs:
       - name: Upload Badge
         id: upload-badge
         uses: actions/upload-artifact@v4
-        if: steps.skip.outputs.should_skip != 'true' #&& github.ref_name == 'main'
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         with:
           name: ${{ matrix.feature }}-coverage
           path: ${{ matrix.feature }}-coverage.svg
           if-no-files-found: error
 
       - name: Checkout badge Branch
-        if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         uses: actions/checkout@v4
         with:
           ref: badge
@@ -152,9 +152,8 @@ jobs:
           if_no_artifact_found: fail
 
       - name: Update coverage badge
-        if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         run: |
-          cat ${{ matrix.feature }}-coverage.svg
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ matrix.feature }}-coverage.svg
