@@ -3,91 +3,133 @@ name: Quality
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, closed]
+    types: [opened, reopened, synchronize]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+  pull-requests: write
+
 env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
-  THRESHOLD-TOTAL: 70
+  THRESHOLD-TOTAL: 10
 
 jobs:
-  test:
-    name: Test Job
+  identify-directories:
+    name: Identifies affected directories
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+
+      - name: Identify modified directories
+        id: changes
+        run: |
+          git fetch origin main
+          eval ${{ env.CONFIG_TOKEN }}
+          MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
+          echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
+    outputs:
+      modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
+  run-coverage:
+    name: Run coverage and tests for ${{ matrix.feature }}
+    needs: identify-directories
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        feature: ['pkgs','onboarding-worker']
+    continue-on-error: true
+    steps:
+      - name: Should Skip
+        id: skip
+        if: ${{ !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature) }}
+        run: |
+          echo "Skipping jobs ${{ matrix.feature }} has not modified"
+          echo "should_skip=true" >> $GITHUB_OUTPUT
+
       - name: Checkout
+        if: steps.skip.outputs.should_skip != 'true'
         uses: actions/checkout@v4
 
       - name: Set up Go
+        if: steps.skip.outputs.should_skip != 'true'
         uses: actions/setup-go@v5
         with:
           check-latest: true
           go-version: '1.24.2'
 
-      - name: Identify modified directories
-        id: changes
-        run: |
-          git fetch origin master
-          eval ${{ env.CONFIG_TOKEN }}
-          MODIFIED_DIRS=$(git diff --name-only origin/master | cut -d'/' -f1 | sort -u)
-          echo "MODIFIED_DIRS=$MODIFIED_DIRS" >> $GITHUB_ENV
-          echo ${{ env.MODIFIED_DIRS }}
+      - name: download artifact (main.breakdown)
+        if: steps.skip.outputs.should_skip != 'true'
+        id: download-main-breakdown
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          branch: main
+          workflow_conclusion: success
+          name: main-${{ matrix.feature }}.breakdown
+          if_no_artifact_found: fail
+        continue-on-error: true
 
-      - name: Run coverage for onboarding-worker
-        if: contains(env.MODIFIED_DIRS, 'onboarding-worker')
+      - name: Run make coverage
+        if: steps.skip.outputs.should_skip != 'true'
+        id: coverage
         run: |
-          echo "Running coverage for onboarding-worker"
-          cd onboarding-worker
+          cd ${{ matrix.feature }}
           make coverage
-          mv onboarding-worker/coverage.html onboarding-worker-coverage.html
-          mv onboarding-worker/coverage.total onboarding-worker-coverage.total
+          echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
           cd ..
 
-      - name: Run coverage for pkgs
-        if: contains(env.MODIFIED_DIRS, 'pkgs')
-        run: |
-          echo "Running coverage for pkgs"
-          cd pkgs
-          make coverage
-          mv pkgs/coverage.html pkgs-coverage.html
-          mv pkgs/coverage.total pkgs-coverage.total
-          cd ..
+      - name: Run go-test-coverage
+        if: steps.skip.outputs.should_skip != 'true'
+        id: test-coverage
+        uses: vladopajic/go-test-coverage@v2
+        env:
+          BREAKDOWN_FILE_NAME: main-${{ matrix.feature }}.breakdown
+        with:
+          profile: ${{ matrix.feature }}/coverage.out
+          threshold-file: ${{ env.THRESHOLD-FILE }}
+          threshold-package: ${{ env.THRESHOLD-PACKAGE }}
+          threshold-total: ${{ env.THRESHOLD-TOTAL }}
+          badge-file-name: ${{ matrix.feature }}-coverage.svg
+          breakdown-file-name: ${{ github.ref_name == 'main' && env.BREAKDOWN_FILE_NAME || '' }}
+          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && env.BREAKDOWN_FILE_NAME || '' }}
+        continue-on-error: true
 
-      - name: Upload coverage reports to branch
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        if: steps.skip.outputs.should_skip != 'true' && github.ref_name == 'main'
+        with:
+          name: main-${{ matrix.feature }}.breakdown
+          path: main-${{ matrix.feature }}.breakdown
+          if-no-files-found: error
+
+      - name: post coverage report
+        if: steps.skip.outputs.should_skip != 'true' &&  github.event.pull_request.merged != true
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: coverage-report
+          pr-number: ${{ github.event.pull_request.number }}
+          message: |
+            go-test-coverage report:
+            ```
+            ${{ fromJSON(steps.test-coverage.outputs.report) }}```
+
+      - name: Checkout badges Branch
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
+        uses: actions/checkout@v4
+        with:
+          ref: badges
+          clean: false
+
+      - name: Update coverage badge
         if: github.event.pull_request.merged == true
         run: |
-          git fetch origin
-          git checkout -b coverage-reports origin/coverage-reports || git checkout --orphan coverage-reports
-          mkdir -p coverage
-          mv onboarding-worker-coverage.html coverage/onboarding-worker-coverage.html
-          mv pkgs-coverage.html coverage/pkgs-coverage.html
-          git add coverage/
-          git commit -m "Update coverage reports" || true
-          git push origin coverage-reports
-
-      - name: Update coverage badge to branch
-        if: github.event.pull_request.merged == true
-        run: |
-          for project in onboarding-worker pkgs; do
-            if [[ -f ${project}-coverage.out ]]; then
-              COVERAGE=$(go tool cover -func=${project}-coverage.out | grep total: | grep -Eo '[0-9]+\.[0-9]+')
-              COLOR=green
-              if (( ${COVERAGE%\.*} < 80 )); then COLOR=cyan; fi
-              if (( ${COVERAGE%\.*} < 70 )); then COLOR=yellow; fi
-              if (( ${COVERAGE%\.*} < 60 )); then COLOR=orange; fi
-              if (( ${COVERAGE%\.*} < 50 )); then COLOR=red; fi
-              echo "COVERAGE for $project: $COVERAGE"
-              echo "COLOR: $COLOR"
-
-              curl "https://img.shields.io/badge/${project}_coverage-$COVERAGE%25-$COLOR" > ${project}-coverage.svg
-              git add ${project}-coverage.svg
-            fi
-          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "update coverage badges" || true
-          git push origin badge
+          git add ${{ matrix.feature }}-coverage.svg
+          git commit -m "update coverage badge" || true
+          git push origin badges
