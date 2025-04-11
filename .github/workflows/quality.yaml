@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Should Skip
         id: skip
-        if: !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature)
+        if: ${{ !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature) }}
         run: |
           echo "Skipping jobs ${ matrix.feature } has not modified"
           echo "should_skip=true" >> $GITHUB_OUTPUT
