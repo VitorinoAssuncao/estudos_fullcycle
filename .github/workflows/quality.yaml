@@ -129,10 +129,9 @@ jobs:
 
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
-        uses: actions/checkout@v4
-        with:
-          ref: badge
-          clean: false
+        run: |
+          git checkout badge || git checkout -b badge
+          git stash pop
 
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
