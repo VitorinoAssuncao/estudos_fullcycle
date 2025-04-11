@@ -134,11 +134,6 @@ jobs:
           path: ${{ matrix.feature }}-coverage.svg
           if-no-files-found: error
 
-      - name: Check upload badge
-        id: check-upload-badge
-        run: |
-            echo ${{ steps.upload-badge.outputs.artifact-id }}
-
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
         uses: actions/checkout@v4
@@ -151,8 +146,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v9
         with:
           github_token: '${{ secrets.GITHUB_TOKEN }}'
-          pr: ${{ github.event.pull_request.number }}
-          name: ${{ matrix.feature }}-coverage
+          run_id: ${{ github.event.workflow_run.id }}
           search_artifacts: true
           if_no_artifact_found: fail
 
