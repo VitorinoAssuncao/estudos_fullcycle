@@ -73,7 +73,6 @@ jobs:
         uses: dawidd6/action-download-artifact@v9
         with:
           branch: main
-          workflow_conclusion: success
           name: main-${{ matrix.feature }}.breakdown
           if_no_artifact_found: fail
         continue-on-error: true
