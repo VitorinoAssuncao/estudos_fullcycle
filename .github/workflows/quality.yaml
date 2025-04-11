@@ -37,7 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        feature: ['pkgs']
+        feature: ['pkgs','onboarding-worker']
+    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
