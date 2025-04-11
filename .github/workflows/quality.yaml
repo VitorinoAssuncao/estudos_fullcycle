@@ -40,16 +40,26 @@ jobs:
         feature: ['pkgs','onboarding-worker']
     continue-on-error: true
     steps:
+      - name: Should Skip
+        id: skip
+        if: !contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
+        run: |
+          echo "Skipping jobs ${ matrix.feature } has not modified"
+          echo "should_skip=true" >> $GITHUB_OUTPUT
+
       - name: Checkout
+        if: steps.skip.outputs.should_skip != 'true'
         uses: actions/checkout@v4
 
       - name: Set up Go
+        if: steps.skip.outputs.should_skip != 'true'
         uses: actions/setup-go@v5
         with:
           check-latest: true
           go-version: '1.24.2'
 
       - name: download artifact (main.breakdown)
+        if: steps.skip.outputs.should_skip != 'true'
         id: download-main-breakdown
         uses: dawidd6/action-download-artifact@v9
         with:
@@ -60,6 +70,7 @@ jobs:
         continue-on-error: true
 
       - name: Run make coverage
+        if: steps.skip.outputs.should_skip != 'true'
         id: coverage
         run: |
           cd ${{ matrix.feature }}
@@ -69,6 +80,7 @@ jobs:
 
       - name: Run go-test-coverage
         id: test-coverage
+        if: steps.skip.outputs.should_skip != 'true'
         uses: vladopajic/go-test-coverage@v2
         env:
           BREAKDOWN_FILE_NAME: main-${{ matrix.feature }}.breakdown
@@ -85,14 +97,14 @@ jobs:
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
-        if: github.ref_name == 'main'
+        if: steps.skip.outputs.should_skip != 'true' && github.ref_name == 'main'
         with:
           name: main-${{ matrix.feature }}.breakdown
           path: main-${{ matrix.feature }}.breakdown
           if-no-files-found: error
 
       - name: post coverage report
-        if: ${{ github.event.pull_request.merged != true }}
+        if: steps.skip.outputs.should_skip != 'true' &&  github.event.pull_request.merged != true
         uses: thollander/actions-comment-pull-request@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -104,7 +116,7 @@ jobs:
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
 
       - name: Checkout badges Branch
-        if: github.event.pull_request.merged == true
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         uses: actions/checkout@v4
         with:
           ref: badges
