@@ -35,10 +35,13 @@ jobs:
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
-  run-coverage-pkg:
-    name: Run coverage and tests for PKGS
+  run-coverage:
+    name: Run coverage and tests for ${{ matrix.feature }}
     needs: identify-directories
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        feature: ['pkgs', 'onboarding-worker']
     if: contains(needs.identify-directories.outputs.modified_dirs, 'pkgs')
     steps:
       - name: Checkout
@@ -56,13 +59,14 @@ jobs:
         with:
           branch: main
           workflow_conclusion: success
-          name: main-pkgs.breakdown
+          name: main-${{ matrix.feature }}.breakdown
           if_no_artifact_found: fail
+        continue-on-error: true
 
       - name: Run make coverage
         id: coverage
         run: |
-          cd pkgs
+          cd ${{ matrix.feature }}
           make coverage
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
           cd ..
@@ -70,22 +74,24 @@ jobs:
       - name: Run go-test-coverage
         id: test-coverage
         uses: vladopajic/go-test-coverage@v2
+        env:
+          BREAKDOWN_FILE_NAME: main-${{ matrix.feature }}.breakdown
         with:
           profile: pkgs/coverage.out
           threshold-file: ${{ env.THRESHOLD-FILE }}
           threshold-package: ${{ env.THRESHOLD-PACKAGE }}
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
-          badge-file-name: pkgs-coverage.svg
-          breakdown-file-name: ${{ github.ref_name == 'main' && 'main-pkgs.breakdown' || '' }}
-          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && 'main-pkgs.breakdown' || '' }}
+          badge-file-name: ${{ matrix.feature }}-coverage.svg
+          breakdown-file-name: ${{ github.ref_name == 'main' && env.BREAKDOWN_FILE_NAME || '' }}
+          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && env.BREAKDOWN_FILE_NAME || '' }}
         continue-on-error: true
 
-      - name: upload artifact (main-pkgs.breakdown)
+      - name: upload artifact
         uses: actions/upload-artifact@v4
-        if: github.ref_name == 'main'
+#        if: github.ref_name == 'main'
         with:
-          name: main-pkgs.breakdown
-          path: main-pkgs.breakdown
+          name: main-${{ matrix.feature }}.breakdown
+          path: main-${{ matrix.feature }}.breakdown
           if-no-files-found: error
 
       - name: post coverage report
@@ -112,87 +118,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pkgs-coverage.svg
-          git commit -m "update coverage badge" || true
-          git push origin badges
-
-  run-coverage-onboarding-worker:
-    name: Run coverage and tests for Onboarding Worker
-    needs: identify-directories
-    runs-on: ubuntu-latest
-    if: contains(needs.identify-directories.outputs.modified_dirs, 'onboarding-worker')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          check-latest: true
-          go-version: '1.24.2'
-
-      - name: download artifact (main.breakdown)
-        id: download-main-breakdown
-        uses: dawidd6/action-download-artifact@v9
-        with:
-          branch: main
-          workflow_conclusion: success
-          name: main-onboarding-worker.breakdown
-          if_no_artifact_found: fail
-
-      - name: Run make coverage
-        id: coverage
-        run: |
-          cd pkgs
-          make coverage
-          echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
-          cd ..
-
-      - name: Run go-test-coverage
-        id: test-coverage
-        uses: vladopajic/go-test-coverage@v2
-        with:
-          profile: onboarding-worker/coverage.out
-          threshold-file: ${{ env.THRESHOLD-FILE }}
-          threshold-package: ${{ env.THRESHOLD-PACKAGE }}
-          threshold-total: ${{ env.THRESHOLD-TOTAL }}
-          badge-file-name: onboarding-worker-coverage.svg
-          breakdown-file-name: ${{ github.ref_name == 'main' && 'main-onboarding-worker.breakdown' || '' }}
-          diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && 'main-onboarding-worker.breakdown' || '' }}
-        continue-on-error: true
-
-      - name: upload artifact (main.breakdown)
-        uses: actions/upload-artifact@v4
-        if: github.ref_name == 'main'
-        with:
-          name: main-onboarding-worker.breakdown
-          path: main-onboarding-worker.breakdown
-          if-no-files-found: error
-
-      - name: post coverage report
-        if: ${{ github.event.pull_request.merged != true }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          comment-tag: coverage-report
-          pr-number: ${{ github.event.pull_request.number }}
-          message: |
-            go-test-coverage report:
-            ```
-            ${{ fromJSON(steps.test-coverage.outputs.report) }}```
-
-      - name: Checkout badges Branch
-        if: github.event.pull_request.merged == true
-        uses: actions/checkout@v4
-        with:
-          ref: badges
-          clean: false
-
-      - name: Update coverage badge
-        if: github.event.pull_request.merged == true
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add onboarding-worker-coverage.svg
+          git add ${{ matrix.feature }}-coverage.svg
           git commit -m "update coverage badge" || true
           git push origin badges
