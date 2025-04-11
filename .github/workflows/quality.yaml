@@ -132,15 +132,13 @@ jobs:
           ref: badge
           clean: false
 
-      - name: Show files
-        run: ls -l
-
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' #&& github.event.pull_request.merged == true
         run: |
+          ls -l
+          stat ${{ matrix.feature }}-coverage.svg
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm --cached ${{ matrix.feature }}-coverage.svg || true
-          git add --force ${{ matrix.feature }}-coverage.svg
+          git add ${{ matrix.feature }}-coverage.svg
           git commit -m "update coverage badge" || true
           git push origin badge
