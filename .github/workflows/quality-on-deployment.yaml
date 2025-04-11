@@ -26,12 +26,10 @@ jobs:
         uses: matt-usurp/validate-semver@v2
         with:
             version: ${{ github.event.release.tag_name }}
-
-      - name: Set output job values
-        run: |
-          echo "major=${{ steps.check-tag.outputs.major }}" >> $GITHUB_OUTPUT
-          echo "prerelease=${{ steps.check-tag.outputs.prerelease }}" >> $GITHUB_OUTPUT
-          echo "build=${{ steps.check-tag.outputs.build }}" >> $GITHUB_OUTPUT
+    outputs:
+        major: ${{ steps.check-tag.outputs.major }}
+        prerelease: ${{ steps.check-tag.outputs.prerelease }}
+        build: ${{ steps.check-tag.outputs.build }}
 
   run-coverage:
     name: Run Coverage and update badges on Deployment
