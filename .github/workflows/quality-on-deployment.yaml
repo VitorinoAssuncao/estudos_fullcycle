@@ -29,10 +29,10 @@ jobs:
 
       - name: Show tag values
         run: |
-          echo "major {{ steps.check-tag.outputs.major }}"
-          echo "prerelease {{ steps.check-tag.outputs.prerelease }}"
-          echo "build {{ steps.check-tag.outputs.build }}"
-          echo "tag {{ github.event.release.tag_name }}"
+          echo "major ${{ steps.check-tag.outputs.major }}"
+          echo "prerelease ${{ steps.check-tag.outputs.prerelease }}"
+          echo "build ${{ steps.check-tag.outputs.build }}"
+          echo "tag ${{ github.event.release.tag_name }}"
 
   run-coverage:
     name: Run Coverage and update badges on Deployment
