@@ -142,7 +142,7 @@ jobs:
         id: download-badge
         uses: dawidd6/action-download-artifact@v9
         with:
-          branch: ${{ github.ref_name }}
+          pr: ${{ github.event.pull_request.number }}
           name: ${{ matrix.feature }}-coverage
           if_no_artifact_found: fail
 
