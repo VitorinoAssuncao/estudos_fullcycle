@@ -72,8 +72,11 @@ jobs:
         id: download-main-breakdown
         uses: dawidd6/action-download-artifact@v9
         with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
           branch: main
           name: main-${{ matrix.feature }}.breakdown
+          workflow: quality.yaml
+          workflow_search: true
           if_no_artifact_found: fail
         continue-on-error: true
 
@@ -104,7 +107,7 @@ jobs:
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
-        if: steps.skip.outputs.should_skip != 'true' && github.ref_name == 'main'
+        if: steps.skip.outputs.should_skip != 'true' &&  github.event.pull_request.merged == true
         with:
           name: main-${{ matrix.feature }}.breakdown
           path: main-${{ matrix.feature }}.breakdown
@@ -122,12 +125,31 @@ jobs:
             ```
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
 
+      - name: Upload Badge
+        id: upload-badge
+        uses: actions/upload-artifact@v4
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
+        with:
+          name: ${{ matrix.feature }}-coverage
+          path: ${{ matrix.feature }}-coverage.svg
+          if-no-files-found: error
+
       - name: Checkout badge Branch
         if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
         uses: actions/checkout@v4
         with:
           ref: badge
-          clean: false
+
+      - name: download badge
+        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
+        id: download-badge
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          run_id: ${{ github.event.workflow_run.id }}
+          name: ${{ matrix.feature }}-coverage
+          search_artifacts: true
+          if_no_artifact_found: fail
 
       - name: Update coverage badge
         if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
