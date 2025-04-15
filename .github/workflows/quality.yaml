@@ -17,7 +17,7 @@ env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 10
-  ACCEPTED_PACKAGES: 'pkgs'
+  ACCEPTED_PACKAGES: "pkgs, onboarding-worker"
 
 jobs:
   identify-directories:
@@ -33,9 +33,9 @@ jobs:
           git fetch origin main
           eval ${{ env.CONFIG_TOKEN }}
           MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
-          if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+#          if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
             MODIFIED_DIRS=${{ env.ACCEPTED_PACKAGES }}
-          fi
+#          fi
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
