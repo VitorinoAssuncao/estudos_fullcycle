@@ -7,7 +7,7 @@ func Hello(name string) string {
 }
 
 func HelloWorld(name string) string {
-	return fmt.Sprintf("Hello World %s", name)
+	return fmt.Sprintf("Hello World %s!", name)
 }
 
 func Add(a, b int) int {
