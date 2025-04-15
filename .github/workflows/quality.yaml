@@ -99,7 +99,7 @@ jobs:
           BREAKDOWN_FILE_NAME: main-${{ matrix.feature }}.breakdown
         with:
           profile: ${{ matrix.feature }}/coverage.out
-          git-token: ${{ github.event.pull_request.merged != true && secrets.GITHUB_TOKEN || '' }}
+          git-token: ${{ github.event.pull_request.merged == true && secrets.GITHUB_TOKEN || '' }}
           git-branch: 'badge'
           git-file-name: '.badges/${{ matrix.feature }}-coverage.svg'
           threshold-file: ${{ env.THRESHOLD-FILE }}

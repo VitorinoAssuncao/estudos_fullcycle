@@ -73,44 +73,13 @@ jobs:
         uses: vladopajic/go-test-coverage@v2
         with:
           profile: ${{ matrix.feature }}/coverage.out
+          git-token: ${{  secrets.GITHUB_TOKEN }}
+          git-branch: 'badge'
+          git-file-name: '.badges/${{ matrix.feature }}--deploy-coverage.svg'
           threshold-file: ${{ env.THRESHOLD-FILE }}
           threshold-package: ${{ env.THRESHOLD-PACKAGE }}
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
-          badge-file-name: ${{ matrix.feature }}-deploy-coverage.svg
         continue-on-error: true
-
-      - name: Check Badge Value
-        run: |
-          cat ${{ matrix.feature }}-deploy-coverage.svg
-
-      - name: Upload Badge
-        id: upload-badge
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.feature }}-deploy-coverage
-          path: ${{ matrix.feature }}-deploy-coverage.svg
-          if-no-files-found: error
-
-      - name: Checkout badge Branch
-        uses: actions/checkout@v4
-        with:
-          ref: badge
-
-      - name: download badge
-        id: download-badge
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.feature }}-deploy-coverage
-
-      - name: Update coverage badge
-        run: |
-          cat ${{ matrix.feature }}-deploy-coverage.svg
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ${{ matrix.feature }}-deploy-coverage.svg
-          git add version-badge.svg
-          git commit -m "update coverage on deploy badge" || true
-          git push origin badge
 
   update-version:
     name: Update version Badge
@@ -133,7 +102,7 @@ jobs:
         with:
           label: "Version"
           status: "${{ github.event.release.tag_name }}"
-          path: "version-badge.svg"
+          path: ".badges/version-badge.svg"
 
       - name: Update coverage badge
         run: |
