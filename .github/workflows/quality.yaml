@@ -128,8 +128,3 @@ jobs:
             go-test-coverage report:
             ```
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
-
-      - name: Check Badge Value
-        if: steps.skip.outputs.should_skip != 'true'
-        run: |
-          cat ${{ matrix.feature }}-coverage.svg
