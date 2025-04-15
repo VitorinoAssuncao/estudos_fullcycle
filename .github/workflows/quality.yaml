@@ -33,9 +33,7 @@ jobs:
           git fetch origin main
           eval ${{ env.CONFIG_TOKEN }}
           MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
-#          if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
-            MODIFIED_DIRS=${{ env.ACCEPTED_PACKAGES }}
-#          fi
+          MODIFIED_DIRS=${{ env.ACCEPTED_PACKAGES }}
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
