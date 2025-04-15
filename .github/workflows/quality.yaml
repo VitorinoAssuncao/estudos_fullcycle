@@ -14,10 +14,11 @@ permissions:
   pull-requests: write
 
 env:
+  CONFIG_TOKEN: git config --global url."https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 10
-  ACCEPTED_PACKAGES: 'pkgs'
+  DEFAULT_DIRS: pkgs
 
 jobs:
   identify-directories:
@@ -34,7 +35,7 @@ jobs:
           eval ${{ env.CONFIG_TOKEN }}
           MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
           if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
-            MODIFIED_DIRS=${{ env.ACCEPTED_PACKAGES }}
+            MODIFIED_DIRS=${{ env.DEFAULT_DIRS }}
           fi
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
@@ -85,6 +86,7 @@ jobs:
         id: coverage
         run: |
           cd ${{ matrix.feature }}
+          eval ${{ env.CONFIG_TOKEN }}
           make coverage
           echo "total=$(tail -n 1 coverage.total)" >> $GITHUB_OUTPUT
           cd ..
@@ -97,10 +99,12 @@ jobs:
           BREAKDOWN_FILE_NAME: main-${{ matrix.feature }}.breakdown
         with:
           profile: ${{ matrix.feature }}/coverage.out
+          git-token: ${{ github.event.pull_request.merged == true && secrets.GITHUB_TOKEN || '' }}
+          git-branch: 'badge'
+          git-file-name: '.badges/${{ matrix.feature }}-coverage.svg'
           threshold-file: ${{ env.THRESHOLD-FILE }}
           threshold-package: ${{ env.THRESHOLD-PACKAGE }}
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
-          badge-file-name: ${{ matrix.feature }}-coverage.svg
           breakdown-file-name: ${{ github.ref_name == 'main' && env.BREAKDOWN_FILE_NAME || '' }}
           diff-base-breakdown-file-name: ${{ steps.download-main-breakdown.outputs.found_artifact == 'true' && env.BREAKDOWN_FILE_NAME || '' }}
         continue-on-error: true
@@ -124,40 +128,3 @@ jobs:
             go-test-coverage report:
             ```
             ${{ fromJSON(steps.test-coverage.outputs.report) }}```
-
-      - name: Check Badge Value
-        if: steps.skip.outputs.should_skip != 'true'
-        run: |
-          cat ${{ matrix.feature }}-coverage.svg
-
-      - name: Upload Badge
-        id: upload-badge
-        uses: actions/upload-artifact@v4
-        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
-        with:
-          name: ${{ matrix.feature }}-coverage
-          path: ${{ matrix.feature }}-coverage.svg
-          if-no-files-found: error
-
-      - name: Checkout badge Branch
-        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
-        uses: actions/checkout@v4
-        with:
-          ref: badge
-
-      - name: download badge
-        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
-        id: download-badge
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.feature }}-coverage
-
-      - name: Update coverage badge
-        if: steps.skip.outputs.should_skip != 'true' && github.event.pull_request.merged == true
-        run: |
-          cat ${{ matrix.feature }}-coverage.svg
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ${{ matrix.feature }}-coverage.svg
-          git commit -m "update coverage badge" || true
-          git push origin badge
