@@ -75,7 +75,7 @@ jobs:
           profile: ${{ matrix.feature }}/coverage.out
           git-token: ${{  secrets.GITHUB_TOKEN }}
           git-branch: 'badge'
-          git-file-name: '.badges/${{ matrix.feature }}--deploy-coverage.svg'
+          git-file-name: '.badges/${{ matrix.feature }}-deploy-coverage.svg'
           threshold-file: ${{ env.THRESHOLD-FILE }}
           threshold-package: ${{ env.THRESHOLD-PACKAGE }}
           threshold-total: ${{ env.THRESHOLD-TOTAL }}
