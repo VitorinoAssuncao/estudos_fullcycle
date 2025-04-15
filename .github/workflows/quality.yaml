@@ -17,7 +17,7 @@ env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 10
-  ACCEPTED_PACKAGES: "pkgs, onboarding-worker"
+  ACCEPTED_PACKAGES: "'pkgs', 'onboarding-worker'"
 
 jobs:
   identify-directories:
