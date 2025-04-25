@@ -18,7 +18,7 @@ env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 10
-  DEFAULT_DIRS: pkgs
+  DEFAULT_DIRS: "pkgs"
 
 jobs:
   identify-directories:
@@ -44,12 +44,20 @@ jobs:
       - name: Set modified Directories
         id: set-changes
         run: |
-          if [ "${{ steps.changes.outputs.pkgs }}" = "true" ]; then
-            MODIFIED_DIRS="${MODIFIED_DIRS} pkgs"
-          fi
-          echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
+          IFS=$'\n'
+          dirsArray=(${DEFAULT_DIRS})
+          MODIFIED_DIRS=""
+      
+          for dir in "${dirsArray[@]}"; do
+            dirValue="${{ steps.changes.outputs.${dir} }}"
+            if [ "$dirValue" = "true" ]; then
+              MODIFIED_DIRS="${MODIFIED_DIRS} ${dir}"
+            fi
+          done
+      
+          echo "modified_dirs=${MODIFIED_DIRS}" >> $GITHUB_OUTPUT
     outputs:
-      modified_dirs: ${{ steps.set-changes.outputs.modified_dirs }}
+      modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
 
   run-coverage:
     name: Run coverage and tests for ${{ matrix.feature }}
