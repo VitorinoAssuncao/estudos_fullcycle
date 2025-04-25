@@ -18,7 +18,7 @@ env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 10
-  DEFAULT_DIRS: ""
+  DEFAULT_DIRS: "pkgs"
 
 jobs:
   identify-directories:
@@ -44,12 +44,18 @@ jobs:
       - name: Set modified Directories
         id: set-changes
         run: |
-          if [ "${{ steps.changes.outputs.pkgs }}" = "true" ]; then
-            MODIFIED_DIRS="${MODIFIED_DIRS} pkgs"
-          fi
           IFS=$'\n'
-          dirsArray=($MODIFIED_DIRS)
-          echo "modified_dirs=(${dirsArray[@]})" >> $GITHUB_ENV
+          dirsArray=(${DEFAULT_DIRS})
+          MODIFIED_DIRS=""
+          
+          for dir in "${dirsArray[@]}"; do
+          dirCommand="steps.changes.outputs.${dir}"
+          if [ "${!dirCommand}" = "true" ]; then
+          MODIFIED_DIRS="${MODIFIED_DIRS} ${dir}"
+          fi
+          done
+          
+          echo "modified_dirs=${MODIFIED_DIRS}" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
 
@@ -59,13 +65,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        feature: ${{ needs.identify-directories.outputs.modified_dirs }}
+        feature: ['pkgs', 'onboarding-worker']
     continue-on-error: true
     steps:
-      - name: Show output value
-        run: |
-          echo "modified dirs ${{ needs.identify-directories.outputs.modified_dirs }}"
-
       - name: Should Skip
         id: skip
         if: ${{ !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature) }}
