@@ -18,7 +18,7 @@ env:
   THRESHOLD-FILE: 0
   THRESHOLD-PACKAGE: 0
   THRESHOLD-TOTAL: 10
-  DEFAULT_DIRS: pkgs
+  DEFAULT_DIRS: ""
 
 jobs:
   identify-directories:
@@ -47,9 +47,11 @@ jobs:
           if [ "${{ steps.changes.outputs.pkgs }}" = "true" ]; then
             MODIFIED_DIRS="${MODIFIED_DIRS} pkgs"
           fi
-          echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
+          IFS=$'\n'
+          dirsArray=($MODIFIED_DIRS)
+          echo "modified_dirs=(${dirsArray[@]})" >> $GITHUB_ENV
     outputs:
-      modified_dirs: ${{ steps.set-changes.outputs.modified_dirs }}
+      modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
 
   run-coverage:
     name: Run coverage and tests for ${{ matrix.feature }}
@@ -57,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        feature: ['pkgs', 'onboarding-worker']
+        feature: ${{ needs.identify-directories.outputs.modified_dirs }}
     continue-on-error: true
     steps:
       - name: Should Skip
