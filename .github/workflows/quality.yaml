@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Identify modified files
-        id: changes-folders
+        id: changes
         uses: dorny/paths-filter@v3
         with:
           base: 'main'
@@ -41,18 +41,15 @@ jobs:
         run: |
           echo "pkgs ${{ steps.changes.outputs.pkgs }}"
 
-      - name: Identify modified directories
-        id: changes
+      - name: Set modified Directories
+        id: set-changes
         run: |
-          git fetch origin main
-          eval ${{ env.CONFIG_TOKEN }}
-          MODIFIED_DIRS=$(git diff --name-only origin/main | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
-          if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
-            MODIFIED_DIRS=${{ env.DEFAULT_DIRS }}
+          if [ "${{ steps.changes.outputs.pkgs }}" = "true" ]; then
+            MODIFIED_DIRS="${MODIFIED_DIRS} pkgs"
           fi
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
-      modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
+      modified_dirs: ${{ steps.set-changes.outputs.modified_dirs }}
 
   run-coverage:
     name: Run coverage and tests for ${{ matrix.feature }}
