@@ -34,7 +34,7 @@ func TestHelloWorld(t *testing.T) {
 		input string
 		want  string
 	}{
-		{name: "should return Hello Vitorino", input: "Vitorino", want: "Hello World Vitorino!!"},
+		{name: "should return Hello Vitorino", input: "Vitorino", want: "Hello World Vitorino!!!"},
 	}
 
 	for _, tc := range tt {
