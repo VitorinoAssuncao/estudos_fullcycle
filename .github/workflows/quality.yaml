@@ -47,14 +47,14 @@ jobs:
           IFS=$'\n'
           dirsArray=(${DEFAULT_DIRS})
           MODIFIED_DIRS=""
-          
+      
           for dir in "${dirsArray[@]}"; do
-          dirCommand="steps.changes.outputs.${dir}"
-          if [ "${!dirCommand}" = "true" ]; then
-          MODIFIED_DIRS="${MODIFIED_DIRS} ${dir}"
-          fi
+            dirValue="${{ steps.changes.outputs.${dir} }}"
+            if [ "$dirValue" = "true" ]; then
+              MODIFIED_DIRS="${MODIFIED_DIRS} ${dir}"
+            fi
           done
-          
+      
           echo "modified_dirs=${MODIFIED_DIRS}" >> $GITHUB_OUTPUT
     outputs:
       modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
