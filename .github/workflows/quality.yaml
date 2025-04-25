@@ -39,7 +39,7 @@ jobs:
 
       - name: Show value of previous step
         run: |
-          echo "pkgs ${{ steps.changes.outputs.pkgs }}"
+          echo "pkgs ${{ steps.changes-folders.outputs.pkgs }}"
 
       - name: Identify modified directories
         id: changes
