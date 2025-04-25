@@ -42,14 +42,14 @@ jobs:
           echo "pkgs ${{ steps.changes.outputs.pkgs }}"
 
       - name: Set modified Directories
-        id: changes
+        id: set-changes
         run: |
           if [ "${{ steps.changes.outputs.pkgs }}" = "true" ]; then
             MODIFIED_DIRS="${MODIFIED_DIRS} pkgs"
           fi
           echo "modified_dirs=$MODIFIED_DIRS" >> $GITHUB_OUTPUT
     outputs:
-      modified_dirs: ${{ steps.changes.outputs.modified_dirs }}
+      modified_dirs: ${{ steps.set-changes.outputs.modified_dirs }}
 
   run-coverage:
     name: Run coverage and tests for ${{ matrix.feature }}
