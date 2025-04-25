@@ -62,6 +62,10 @@ jobs:
         feature: ${{ needs.identify-directories.outputs.modified_dirs }}
     continue-on-error: true
     steps:
+      - name: Show output value
+        run: |
+          echo "modified dirs ${{ needs.identify-directories.outputs.modified_dirs }}"
+
       - name: Should Skip
         id: skip
         if: ${{ !contains(needs.identify-directories.outputs.modified_dirs, matrix.feature) }}
