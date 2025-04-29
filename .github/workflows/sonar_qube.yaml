@@ -18,6 +18,9 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       
+      - name: Enter on ci-nodejs
+        run: cd ci-nodejs
+
       # Step para configurar o Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
