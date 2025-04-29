@@ -17,9 +17,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      
-      - name: Enter on ci-nodejs
-        run: cd ci-nodejs
 
       # Step para configurar o Node.js
       - name: Set up Node.js
@@ -30,13 +27,17 @@ jobs:
       # Step para instalar dependências
       - name: Install dependencies
         run: npm install
+        working-directory: ./ci-nodejs
 
       # Step para rodar os testes com Jest
       - name: Run tests
         run: npm test
+        working-directory: ./ci-nodejs
 
       # Step para o scan do SonarQube
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./ci-nodejs
