@@ -5,9 +5,9 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
-  paths:
-    - 'ci-nodejs/**'
-    - '.github/workflows/sonar_qube.yaml'
+    paths:
+      - 'ci-nodejs/**'
+      - '.github/workflows/sonar_qube.yaml'
 
 jobs:
   sonarqube:
