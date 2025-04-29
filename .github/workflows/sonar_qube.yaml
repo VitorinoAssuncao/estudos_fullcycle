@@ -1,0 +1,43 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'ci-nodejs/**'
+      - '.github/workflows/sonar_qube.yaml'
+
+jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      # Step para configurar o Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Altere para a versão do Node.js que você utiliza
+
+      # Step para instalar dependências
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./ci-nodejs
+
+      # Step para rodar os testes com Jest
+      - name: Run tests
+        run: npm test
+        working-directory: ./ci-nodejs
+
+      # Step para o scan do SonarQube
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./ci-nodejs
